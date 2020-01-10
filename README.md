@@ -3,7 +3,7 @@ game
 
 This project implements the game of Breakout.
 
-Name: 
+Name: Dana Mulligan (dmm107)
 
 ### Timeline
 
@@ -11,7 +11,7 @@ Start Date:
 
 Finish Date: 
 
-Hours Spent:
+Hours Spent: 2 (as of 12:52 pm fri jan 10)
 
 ### Resources Used
 
