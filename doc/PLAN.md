@@ -14,9 +14,22 @@ to break a block on the block, as well as increasing the "ammunition" each play.
 ### General Level Descriptions
 
 ### Bricks Ideas
-
+I would like to include bricks that take a different number of hits to break,
+and give them different colors to distinguish between them. 
 ### Power Up Ideas
-
+ - grow ball size
+ - widen paddle
+ -
 ### Cheat Key Ideas
-
+ - jump to different levels by clicking the corresponding number key, "1" for level 1,
+ "2" for level 2, etc.
+ - "w" for win game
+ - "r" for reset current level 
+ - "p" for pause? afterwards the y speed and the x speed of the ball will go to
+ zero and then save the values, then hitting "c" for continue will put them back to what
+ they were before
+ - "b" for begin, clearing the splash screen. The player then must press "space" to
+ start the ball moving
 ### Something Extra
+ - add penalty bricks
+ - death zone where the paddle splits into two?
