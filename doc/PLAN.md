@@ -41,7 +41,8 @@ to break a brick) of level 1 is:
 **level 2** will include bricks that take more hits to destroy, as
 well as penalty bricks and power ups. @ represent a brick that adds 
 500 points to the player's score, g represents a brick that will grow the paddle (powerup),
-\* represents a brick that will speed up the ball (penalty)
+\* represents a brick that will speed up the ball (penalty). In Level 2,
+the ball's speed will increase.
 
 |0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|
 ---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---
@@ -65,7 +66,30 @@ well as penalty bricks and power ups. @ represent a brick that adds
 |0|0|0|0|0|0|0|0|_|_|x|_|_|0|0|0|0|0|0|0|0|
 |0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|
 
-**Level 3** will have 
+**Level 3** will have extra power up blocks, as well as the ones that were
+in level 2. 
+
+|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0
+---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---
+|0|0|0|0|0|0|!|0|0|0|0|0|0|0|*|0|0|0|0|0|0|
+|0|0|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|0|0|
+|0|1|2|3|6|5|4|3|4|4|1|4|4|3|4|5|6|3|2|1|0|
+|0|1|2|2|3|3|4|4|5|6|7|6|5|4|4|3|3|2|2|1|0|
+|1|1|1|1|2|2|4|4|2|2|*|2|2|4|4|2|2|1|1|1|1|
+|0|1|1|1|1|1|1|3|3|5|5|5|3|3|f|1|1|1|1|1|0|
+|0|0|g|0|1|1|1|1|3|3|4|3|3|1|1|1|0|0|@|0|0|
+|0|0|0|0|0|0|0|1|2|2|3|2|2|1|0|0|0|0|0|0|0|
+|0|0|0|@|0|0|0|0|1|2|2|2|1|0|0|0|0|0|0|0|0|
+|1|1|1|1|1|1|1|1|1|1|2|1|1|1|1|1|1|1|1|1|1|
+|0|0|0|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|0|0|0|
+|1|1|1|3|0|0|0|0|0|@|@|*|0|0|0|0|0|3|1|1|1|
+|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|
+|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|
+|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|
+|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|
+|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|
+|0|0|0|0|0|0|0|0|_|_|x|_|_|0|0|0|0|0|0|0|0|
+|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|
 
 ### Bricks Ideas
  - bricks require a different number of hits to break, and have corresponding colors
@@ -73,9 +97,9 @@ well as penalty bricks and power ups. @ represent a brick that adds
  
 ### Power Up Ideas
  - grow ball size
- - widen paddle
- - slow down ball
- - increase paddle speed
+ - slow down ball 
+ - increase paddle speed (f)
+ - bonus ball
 
 ### Cheat Key Ideas
  - jump to different levels by clicking the corresponding number key, "1" for level 1,
@@ -90,5 +114,8 @@ well as penalty bricks and power ups. @ represent a brick that adds
  start the ball moving
  - "q" for automatic lose
 ### Something Extra
- - add penalty bricks
- - death zone where the paddle splits into multiple pieces?
+- Add penalty bricks :
+   * subtract points
+   * 
+ - shield for 
+ 
