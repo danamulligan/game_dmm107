@@ -138,3 +138,4 @@ In Level 2, the ball's speed will increase to increase the difficulty.
     * shield can only save the ball twice. After that, it goes away
  - "bonus ball" round, where extra balls can be shot from the paddle
   and can contribute to breaking bricks, but not losing lives
+  - again, the catch and release function of the paddle as described above
