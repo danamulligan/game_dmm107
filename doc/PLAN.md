@@ -105,7 +105,6 @@ In Level 2, the ball's speed will increase to increase the difficulty.
  - "catch and release" the ball when the shift key is pressed, space to release the ball
  - see below in **Power Up Ideas** for additional abilities
  - jump to the far left of the screen when a key is pressed, as well as the far right when another key is pressed
-
  
 ### Power Up Ideas
  - grow ball size
@@ -128,6 +127,7 @@ In Level 2, the ball's speed will increase to increase the difficulty.
  start the ball moving
  - "q" for automatic lose/quit
  - see above in Paddle Ideas for other cheat keys
+ - click on bricks to "hit" them
  
 ### Something Extra
  - Add penalty bricks
@@ -139,3 +139,4 @@ In Level 2, the ball's speed will increase to increase the difficulty.
  - "bonus ball" round, where extra balls can be shot from the paddle
   and can contribute to breaking bricks, but not losing lives
   - again, the catch and release function of the paddle as described above
+  (similar to the Bricks n Balls game)
