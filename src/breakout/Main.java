@@ -35,16 +35,11 @@ public class Main extends Application{
     public static final double SECOND_DELAY = 1.0 / FRAMES_PER_SECOND;
     public static final double TEN_SECONDS = SECOND_DELAY*10;
     public static final Paint BACKGROUND = Color.AZURE;
-    public static final Paint HIGHLIGHT = Color.LAVENDERBLUSH;
-    public static final Paint PADDLE_COLOR = Color.GREEN;
-    //public static final Paint PADDLE_COLOR_R = Color.RED;
-    public static final double PADDLE_WIDTH = 81;
+    //public static final Paint HIGHLIGHT = Color.LAVENDERBLUSH;
     public static final int GAP = 10;
-    public static final int PADDLE_HEIGHT = 10;
-    public static final int PADDLE_SPEED = 5;
     public static final int BRICK_WIDTH = 20;
     public static final int BRICK_HEIGHT = 20;
-    public static final Paint BALL_COLOR = Color.GREY;
+    //public static final Paint BALL_COLOR = Color.GREY;
     public static final int BALL_RADIUS = 10;
     public static final int BASIC_BALL_SPEED = 100;
     public static final int DOUBLE_IN_SIZE = 2;
@@ -54,24 +49,17 @@ public class Main extends Application{
     private Paddle myPaddle;
     private Ball myBall;
     private Ball bonusBall;
-    private int BALL_SPEED_X;
-    private int BALL_SPEED_Y;
     private boolean startingAllowed = true;
     private int myLives;
-    private int myLevelNumber;
+    //private int myLevelNumber;
     private int myScore;
     private Level myLevel;
-    private Brick myBrick;
+    //private Brick myBrick;
     private boolean paddleIsNormal;
     private Group root;
     private boolean paddleCanMove;
     private boolean brickHasBeenDeleted;
     private boolean bonusBallExists = false;
-    private int totalNumberOfBricks = 0;
-    private int[][] hitsNeeded = new int[SIZE/BRICK_HEIGHT][SIZE/BRICK_WIDTH];
-    private int[][] locationInfoX = new int[SIZE/BRICK_HEIGHT][SIZE/BRICK_WIDTH];
-    private int[][] locationInfoY = new int[SIZE/BRICK_HEIGHT][SIZE/BRICK_WIDTH];
-    private Brick[][] myBricks;
 
 
 // ====================================================================================================================
@@ -97,11 +85,12 @@ public class Main extends Application{
         /*Group*/ root = new Group();
         myLives = 3; //TODO set up this in each level
         myScore = 0;
-        myLevelNumber = 1;
+        //myLevelNumber = 1;
 
         myBall = new Ball();
-        myBall.setBallInformation(BALL_COLOR, SIZE, BALL_RADIUS, GAP, PADDLE_HEIGHT, BASIC_BALL_SPEED);
-        myBall.newBall();
+        //myBall.setBallInformation(BALL_COLOR, SIZE, BALL_RADIUS, GAP, PADDLE_HEIGHT, BASIC_BALL_SPEED);
+        //myBall.newBall();
+        myBall = new Ball();
         bonusBallExists = false;
 
 /*
@@ -136,8 +125,8 @@ public class Main extends Application{
         myPaddle = new Paddle();
         paddleCanMove = false;
         paddleIsNormal = true;
-        myPaddle.setPaddleInformation(SIZE, PADDLE_WIDTH, PADDLE_HEIGHT, GAP, PADDLE_COLOR, PADDLE_SPEED);
-        myPaddle.newPaddle();
+        //myPaddle.setPaddleInformation(SIZE, PADDLE_WIDTH, PADDLE_HEIGHT, GAP, PADDLE_COLOR, PADDLE_SPEED);
+        myPaddle = new Paddle();
 
         /*myLevel = new Level();
         //TODO change the path below
@@ -157,17 +146,15 @@ public class Main extends Application{
         root.getChildren().add(rect);
 
          */
-        bonusBallExists = true;
-        bonusBall = new Ball();
-        bonusBall.setBallInformation(Color.PURPLE, SIZE, BALL_RADIUS, GAP, PADDLE_HEIGHT, BASIC_BALL_SPEED);
-        bonusBall.newBonusBall(BALL_RADIUS, myBall.getNode().getCenterX(), myBall.getNode().getCenterY(), myBall.getBallXSpeed(), myBall.getBallYSpeed());
-        root.getChildren().add(bonusBall.getNode());
+        //bonusBallExists = true;
+        //bonusBall = new Ball();
+        //bonusBall.setBallInformation(Color.PURPLE, SIZE, BALL_RADIUS, GAP, PADDLE_HEIGHT, BASIC_BALL_SPEED);
+        //bonusBall.newBonusBall(BALL_RADIUS, myBall.getNode().getCenterX(), myBall.getNode().getCenterY(), myBall.getBallXSpeed(), myBall.getBallYSpeed());
+        //root.getChildren().add(bonusBall.getNode());
 
         // order added to the group is the order in which they are drawn
         root.getChildren().add(myBall.getNode());
         addPaddleToRoot();
-        //TODO add the bricks to root
-        //root.getChildren().add(myBrick.getNode());
         addNewLevelToRoot(myLevel);
 
         // create a place to see the shapes
@@ -186,7 +173,7 @@ public class Main extends Application{
         // move ball
 
         //bounce ball on paddle
-        //hitBrick();
+        hitBrick();
         moveBall(myBall, elapsedTime);
         bounceBallOffPaddle(myBall);
         if(bonusBallExists){
@@ -196,8 +183,7 @@ public class Main extends Application{
         bounceBallsOffWalls();
     }
     private void moveBall(Ball ballToMove, double elapsedTime){
-        ballToMove.updateBallCenterX(elapsedTime);
-        ballToMove.updateBallCenterY(elapsedTime);
+        ballToMove.updateBallCenter(elapsedTime);
     }
 // ====================================================================================================================
 // managing collisions
@@ -223,32 +209,35 @@ public class Main extends Application{
             endGame();
         }
     }
-    private void bounceBonusBallOffWalls(){
-
-    }
     private void hitBrick(){
         //TODO change this to send it down into level class
-        Shape intersectionBrick = Shape.intersect(myBall.getNode(), myBrick.getNode());
-        if (intersectionBrick.getBoundsInLocal().getWidth() != -1 && !brickHasBeenDeleted) {
-            myBall.bounceY();
-            myBrick.brickIsHit();
-            System.out.println("HIT!");
-            System.out.println(myBrick.getHitsRemaining() + " hits remain!");
-        }
-        if(myBrick.getHitsRemaining()==0 && !brickHasBeenDeleted){
-            myBrick.deleteBrick();
-            brickHasBeenDeleted = true;
-            root.getChildren().remove(myBrick.getNode());
-            System.out.println("this is not infinite loop!");
+        Brick myBrick;
+        for(int row = 0; row<SIZE/Brick.brickHeight; row++) {
+            for (int col = 0; col < SIZE/Brick.brickWidth; col++) {
+                myBrick = myLevel.myBricks[row][col];
+                if (!myBrick.isBrickDestroyed()){
+                    Shape intersectionBrick = Shape.intersect(myBall.getNode(), myBrick.getNode());
+                    if (intersectionBrick.getBoundsInLocal().getWidth() != -1 && myBrick.getHitsRemaining()!=0) {
+                        myBall.bounceY();
+                        myBrick.brickIsHit();
+                        myScore += 100;
+                        System.out.println("HIT!");
+                        System.out.println(myBrick.getHitsRemaining() + " hits remain!");
+                        if (myBrick.getHitsRemaining() == 0) {
+                            myBrick.deleteBrick();
+                            root.getChildren().remove(myBrick.getNode());
+                            System.out.println("this is not infinite loop!");
+                        }
+                    }
+
+                }
+            }
         }
     }
-
     private void bounceBallOffPaddle(Ball ballToBounce){
         Shape intersectionLeft = Shape.intersect(ballToBounce.getNode(), myPaddle.getNodeLeft());
         Shape intersectionMiddle = Shape.intersect(ballToBounce.getNode(), myPaddle.getNodeMiddle());
         Shape intersectionRight = Shape.intersect(ballToBounce.getNode(), myPaddle.getNodeRight());
-        //TODO
-
         if (intersectionLeft.getBoundsInLocal().getWidth() != -1) {
             ballToBounce.bouncePaddleLeft();
         }
@@ -269,10 +258,10 @@ public class Main extends Application{
     private void handleKeyInput (KeyCode code) {
         if (code == KeyCode.RIGHT && paddleCanMove) { //might need to rename this var, or make it a dif one
             //TODO create a separate paddle allowed var?
-            myPaddle.moveRight();
+            myPaddle.movePaddle("right");
         }
         else if (code == KeyCode.LEFT && paddleCanMove) {
-            myPaddle.moveLeft();
+            myPaddle.movePaddle("left");
         }
         else if (code == KeyCode.SPACE && startingAllowed){
             startingAllowed = false;
@@ -282,30 +271,33 @@ public class Main extends Application{
         }
         else if (code == KeyCode.G && paddleIsNormal){ //grow
             removePaddleFromRoot();
-            myPaddle.growPaddle(DOUBLE_IN_SIZE);
+            myPaddle = new Paddle(DOUBLE_IN_SIZE, "grow");
             paddleIsNormal = false;
             addPaddleToRoot();
         }
         else if (code == KeyCode.S && !paddleIsNormal){ //shrink
             removePaddleFromRoot();
-            myPaddle.shrinkPaddle(DOUBLE_IN_SIZE);
+            myPaddle = new Paddle(DOUBLE_IN_SIZE, "shrink");
             paddleIsNormal = true;
             addPaddleToRoot();
         }
         else if (code == KeyCode.F){ //fast
-            myBall.changeBallSpeed(DOUBLE_IN_SIZE);
+            myBall.changeBallSpeed(DOUBLE_IN_SIZE, "fast");
         }
-        else if (code == KeyCode.V){
-            myBall.growBall();
-        }/*
-        else if (code == KeyCode.B){
-            bonusBallExists = true;
-            bonusBall = new Ball();
-            bonusBall.setBallInformation(Color.PURPLE, SIZE, GAP, PADDLE_HEIGHT, BASIC_BALL_SPEED);
-            bonusBall.newBonusBall(BALL_RADIUS, myBall.getNode().getCenterX(), myBall.getNode().getCenterY(), myBall.getBallXSpeed(), myBall.getBallYSpeed());
-            root.getChildren().add(bonusBall.getNode());
-            System.out.println("there should be a bonus ball!");
-        }*/
+        else if (code == KeyCode.T){ //slow like a turtle
+            myBall.changeBallSpeed(DOUBLE_IN_SIZE, "slow");
+        }
+        //else if (code == KeyCode.V){
+        //    myBall.growBall();
+        //}/*
+        //else if (code == KeyCode.B){
+          //  bonusBallExists = true;
+           // bonusBall = new Ball();
+           // bonusBall.setBallInformation(Color.PURPLE, SIZE, GAP, PADDLE_HEIGHT, BASIC_BALL_SPEED);
+          //  bonusBall.newBonusBall(BALL_RADIUS, myBall.getNode().getCenterX(), myBall.getNode().getCenterY(), myBall.getBallXSpeed(), myBall.getBallYSpeed());
+           // root.getChildren().add(bonusBall.getNode());
+           // System.out.println("there should be a bonus ball!");
+        //}*/
         else if (code == KeyCode.L){ //add a life
             //TODO
             myLives++;
@@ -318,62 +310,24 @@ public class Main extends Application{
         else if (code == KeyCode.Q){ //quit
             endGame();
         }
+        else if (code == KeyCode.DIGIT1){
+            changeToLevel(1);
+        }
+        else if (code == KeyCode.DIGIT2){
+            changeToLevel(2);
+        }
+        else if (code == KeyCode.DIGIT3){
+            changeToLevel(3);
+        }
     }
 // ====================================================================================================================
 // helper methods!
 // ====================================================================================================================
-    /*public void setLevelInformation(File filename){
-        try{
-            Scanner sc = new Scanner(filename); //red line bc you're not checking that filename is a valid file
-            for(int row=0; row < SIZE/BRICK_HEIGHT; row++){
-                for(int col=0; col< SIZE/BRICK_WIDTH; col++){
-                    if(sc.hasNext()){
-                        hitsNeeded[row][col] = sc.nextInt();
-                        locationInfoX[row][col] = col*BRICK_WIDTH;
-                        locationInfoY[row][col] = row*BRICK_HEIGHT;
-                        //System.out.println("Hits Needed: " + hitsNeeded[row][col] + " X: "+locationInfoX[row][col]+" Y: "+locationInfoY[row][col]);
-                        totalNumberOfBricks++;
-                    }
-                }
-            }
-        }catch (FileNotFoundException e){
-            e.printStackTrace();
-        }
-        setUpLevel();
-    }
-    public void setUpLevel(){
-        myBricks = new Brick[1][20];
-       // System.out.println("total num of bricks: "+totalNumberOfBricks);
-        for(int row=0; row<1; row++){
-            for(int col = 0; col<20; col++){
-                Brick holder = new Brick();
-                //holder.setFill(Color.GREEN);
-                holder.setBrickInformation(BRICK_WIDTH,BRICK_HEIGHT,SIZE);
-                holder.makeSingleBrick(hitsNeeded[row][col], locationInfoX[row][col], locationInfoY[row][col]);
-                myBricks[row][col] = holder;
-                //System.out.println("Made a brick that needs " + hitsNeeded[row][col] + " hits at X: "+locationInfoX[row][col]+" Y: "+locationInfoY[row][col]);
-                //root.getChildren().add(holder.getNode());
-                //System.out.println("added brick to root!");
-            }
-        }
-        //System.out.println("done with setUpLevel()");
-    }
-    public void printBoard() {
-        for (int row = 0; row < 1; row++) {
-            for (int col = 0; col < 20; col++) {
-
-                Brick holder = myBricks[row][col];
-                //System.out.println("Brick at X: " + col + " and Y: "+ row+ " needs "+holder.getHitsRemaining()+" hits to break");
-            }
-        }
-    }*/
-
-
     public void resetGame(){
         startingAllowed = true;
         paddleCanMove = false;
         updateRootNewBall();
-        updateRootNewPaddle();
+        updateRootNewPaddle(); //to reset it to the center
     }
     public void endGame(){
         //TODO
@@ -383,14 +337,17 @@ public class Main extends Application{
         startingAllowed = false;
         paddleCanMove = false;
     }
+    public void changeToLevel(int levelNumber) {
+
+    }
     public void updateRootNewBall(){
         root.getChildren().remove(myBall.getNode());
-        myBall.newBall();
+        myBall = new Ball();
         root.getChildren().add(myBall.getNode());
     }
     public void updateRootNewPaddle(){
         removePaddleFromRoot();
-        myPaddle.newPaddle();
+        myPaddle = new Paddle();
         addPaddleToRoot();
     }
     public void addNewLevelToRoot(Level levelToBeAdded){

@@ -7,38 +7,38 @@ import javafx.scene.shape.Circle;
 public class Ball{
 
     private Circle ball;
-    private int startingXPosition;
-    private int startingYPosition;
-    private int screenSize;
+    public static final int ballRadius = 10;
+    //private int screenSize = Main.SIZE;
+    private int startingXPosition = Main.SIZE/2;
+    private int startingYPosition = Main.SIZE-ballRadius-Main.GAP-Paddle.PADDLE_HEIGHT;
     private double ballYSpeed;
     private double ballXSpeed;
-    private int ballRadius;
-    private Paint basicBallColor;
-    private Paint bonusBallColor = Color.PURPLE;
-    private int basicBallSpeed;
-    private int paddleHeight;
+    public static final Paint ballColor = Color.GREY;
+    //private Paint bonusBallColor = Color.PURPLE;
+    private int basicBallSpeed = Main.BASIC_BALL_SPEED;
+    private int paddleHeight = Paddle.PADDLE_HEIGHT;
     private int gap;
 
-    public void setBallInformation(Paint BALL_COLOR, int SCREEN_SIZE, int BALL_RADIUS, int GAP, int PADDLE_HEIGHT, int BASIC_BALL_SPEED){
-        paddleHeight = PADDLE_HEIGHT;
-        ballRadius = BALL_RADIUS;
-        screenSize = SCREEN_SIZE;
-        basicBallColor = BALL_COLOR;
-        basicBallSpeed = BASIC_BALL_SPEED;
-        gap = GAP;
-        startingXPosition = screenSize/2;
-        startingYPosition = screenSize-ballRadius-gap-paddleHeight;
+    public Ball(){
+        this(ballRadius, ballColor);
     }
-    public void newBall(){
-        ball = new Circle(startingXPosition,startingYPosition, ballRadius, basicBallColor);
-        ballYSpeed = 0;
-        ballXSpeed = 0;
+    public Ball(int newRadius){
+        this(newRadius, ballColor);
+        //ball = new Circle(startingXPosition, startingYPosition, newRadius, ballColor);
+        //ballXSpeed = 0;
+        //ballYSpeed = 0;
     }
-    public void newBonusBall(int BALL_RADIUS, double xPositionCurrent, double yPositionCurrent, double BALL_X_SPEED, double BALL_Y_SPEED){
-        ball = new Circle(xPositionCurrent,yPositionCurrent,ballRadius,bonusBallColor);
+    public Ball(int newRadius, Paint newBallColor){
+        ball = new Circle(startingXPosition, startingYPosition, newRadius, newBallColor);
+        //ballXSpeed = 0;
+        //ballYSpeed = 0;
+    }
+    /*
+    public Ball(String "bonus"){
+        this();
         ballYSpeed = BALL_Y_SPEED;
         ballXSpeed = BALL_X_SPEED/Math.abs(BALL_X_SPEED) * (Math.random() * basicBallSpeed/2 + basicBallSpeed/2);
-    }
+    }*/
     public void beginMovingBall(){
         ballYSpeed = -1 * basicBallSpeed;
     }
@@ -64,18 +64,20 @@ public class Ball{
         ballXSpeed = Math.random()*Math.abs(basicBallSpeed);
         ballYSpeed *= -1;
     }
-    public void updateBallCenterX(double elapsedTime){
+    //TODO IF YOU ALWAYS PAIR THESE TWO THEN MAKE THEM ONE METHOD
+    public void updateBallCenter(double elapsedTime){
         ball.setCenterX(ball.getCenterX() + ballXSpeed * elapsedTime);
-    }
-    public void updateBallCenterY(double elapsedTime){
         ball.setCenterY(ball.getCenterY() + ballYSpeed * elapsedTime);
     }
-    public void growBall(){
-
-    }
-    public void changeBallSpeed(int scale){
-        ballYSpeed *= scale;
-        ballXSpeed *= scale;
+    public void changeBallSpeed(int scale, String typeOfScale){
+        if(typeOfScale.equals("fast")){
+            ballYSpeed *= scale;
+            ballXSpeed *= scale;
+        }
+        else if(typeOfScale.equals("slow")){
+            ballYSpeed /= scale;
+            ballXSpeed /= scale;
+        }
     }
     public double getBallXSpeed() {
         return ballXSpeed;
