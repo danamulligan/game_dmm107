@@ -47,9 +47,13 @@ public class Level {
         System.out.println("total num of bricks: "+totalNumberOfBricks);
         for(int row=0; row<screenSize/brickHeight; row++){
             for(int col = 0; col<screenSize/brickWidth; col++){
-                Brick holder = new Brick();
-                //holder.setBrickInformation(brickWidth, brickWidth, screenSize);
-                holder.makeSingleBrick(hitsNeeded[row][col], locationInfoX[row][col], locationInfoY[row][col]);
+                Brick holder;
+                if(hitsNeeded[row][col]==0){
+                    holder = new Brick();
+                }
+                else{
+                    holder = new Brick(hitsNeeded[row][col], locationInfoX[row][col], locationInfoY[row][col]);
+                }
                 myBricks[row][col] = holder;
                 System.out.println("Made a brick that needs " + hitsNeeded[row][col] + " hits at X: "+locationInfoX[row][col]+" Y: "+locationInfoY[row][col]);
             }
