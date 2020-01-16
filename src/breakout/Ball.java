@@ -7,7 +7,7 @@ import javafx.scene.shape.Circle;
 public class Ball{
 
     private Circle ball;
-    public static final int ballRadius = 10;
+    public static final int ballRadius = 8;
     //private int screenSize = Main.SIZE;
     private int startingXPosition = Main.SIZE/2;
     private int startingYPosition = Main.SIZE-ballRadius-Main.GAP-Paddle.PADDLE_HEIGHT;
