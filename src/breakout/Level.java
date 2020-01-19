@@ -16,6 +16,7 @@ public class Level {
     int brickWidth;
     int brickHeight;
     int totalNumberOfBricks = 0;
+    public int numberBricksDestroyed = 0;
     private boolean[][] clear;
 
     public Level(File filename){
@@ -27,6 +28,7 @@ public class Level {
             hitsNeeded = new int[screenSize/brickHeight][screenSize/brickWidth];
             locationInfoX = new int[screenSize/brickHeight][screenSize/brickWidth];
             locationInfoY = new int[screenSize/brickHeight][screenSize/brickWidth];
+            clear = new boolean[screenSize/brickHeight][screenSize/brickWidth];
             for(int row=0; row < screenSize/brickHeight; row++){
                 for(int col=0; col<screenSize/brickWidth; col++){
                     if(sc.hasNext()){
@@ -43,6 +45,7 @@ public class Level {
             e.printStackTrace();
         }
         setUpLevel();
+        System.out.println("numberBricksDestroyed: " +numberBricksDestroyed);
     }
     public void setUpLevel(){
         myBricks = new Brick[screenSize/brickHeight][screenSize/brickWidth];
@@ -52,6 +55,7 @@ public class Level {
                 Brick holder;
                 if(hitsNeeded[row][col]==0){
                     holder = new Brick();
+                    numberBricksDestroyed++;
                 }
                 else{
                     holder = new Brick(hitsNeeded[row][col], locationInfoX[row][col], locationInfoY[row][col]);
@@ -67,6 +71,25 @@ public class Level {
     }
     public boolean getBrickClear(int row, int col){
         return clear[row][col];
+    }
+    public void incrementBricksDestroyed(){
+        numberBricksDestroyed++;
+        System.out.println("number of bricks destroyed: "+numberBricksDestroyed);
+    }
+    /*public boolean isClear(){
+        boolean ret = true;
+        for(int row=0; row<screenSize/brickHeight; row++) {
+            for (int col = 0; col < screenSize / brickWidth; col++) {
+                if (!clear[row][col]) {
+                    return clear[row][col];
+                }
+            }
+        }
+        return true;
+    }*/
+    public boolean isClear(){
+        //System.out.println("called");
+        return (numberBricksDestroyed==totalNumberOfBricks);
     }
 
     public static void main(String[] args) {

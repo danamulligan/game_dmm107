@@ -39,6 +39,7 @@ public class Main extends Application{
     public static final int STARTING_LIVES = 3;
 
     private Scene myScene;
+    private Stage myStage;
     private SplashScreen mySplash;
     private Scene holder;
     private Paddle myPaddle;
@@ -46,7 +47,7 @@ public class Main extends Application{
     private Ball bonusBall;
     private boolean startingAllowed = true;
     private int myLives;
-    //private int myLevelNumber;
+    private int myLevelNumber;
     private int myScore;
     private Level myLevel;
     private Level myLevel1;
@@ -73,27 +74,30 @@ public class Main extends Application{
         stage.setTitle(TITLE);
         myLives = 3;
         myScore = 0;
-        myScene = setupGame(SIZE, SIZE, BACKGROUND, "level1");
+        myLevelNumber=1;
+        changeToLevel(myLevelNumber);
+        myScene = setupGame(SIZE, SIZE, BACKGROUND, myLevel);
         mySplash.getButton().setOnAction(e -> stage.setScene(myScene));
-        //if()
+
         //myScene = setupGame(SIZE, SIZE, BACKGROUND, "level1");
         //stage.setScene(myScene);
 
         stage.show();
 
         // attach "game loop" to timeline to play it (basically just calling step() method repeatedly forever)
-        KeyFrame frame = new KeyFrame(Duration.millis(MILLISECOND_DELAY), e -> step(SECOND_DELAY, myLevel));
+        KeyFrame frame = new KeyFrame(Duration.millis(MILLISECOND_DELAY), e -> step(SECOND_DELAY, myLevel, stage));
         Timeline animation = new Timeline();
         animation.setCycleCount(Timeline.INDEFINITE);
         animation.getKeyFrames().add(frame);
         animation.play();
 
     }
-    private Scene setupGame (int width, int height, Paint background, String levelName) {
+    private Scene setupGame (int width, int height, Paint background, Level currentLevel) {
         // create one top level collection to organize the things in the scene
         /*Group*/ root = new Group();
         //myLives = 3; //TODO set up this in each level
         deadBrickCounter = 0;
+        startingAllowed = true;
 
         myBall = new Ball();
         bonusBallExists = false;
@@ -111,8 +115,8 @@ public class Main extends Application{
         myLevel3 = setUpLevel("level3");
         addNewLevelToRoot(myLevel3);*/
 
-        myLevel = setUpLevel(levelName);
-        root.getChildren().add(getLevelRoot(myLevel));
+        //myLevel = setUpLevel(levelName);
+        root.getChildren().add(getLevelRoot(currentLevel));
 
         //root.getChildren().add(bonusBall.getNode());
 
@@ -132,7 +136,7 @@ public class Main extends Application{
 // ====================================================================================================================
     // Change properties of shapes in small ways to animate them over time
     // Note, there are more sophisticated ways to animate shapes, but these simple ways work fine to start
-    private void step (double elapsedTime, Level myLevel) {
+    private void step (double elapsedTime, Level myLevel, Stage stage) {
         // move ball
         //bounce ball on paddle
         hitBricks(myBall.getNode(), "ball", myLevel);
@@ -148,6 +152,14 @@ public class Main extends Application{
             bounceBallOffPaddle(bonusBall);
         }
         bounceBallsOffWalls();
+        if(myLevel.isClear()){
+            myLevelNumber++;
+            System.out.println("changing to level "+myLevelNumber);
+            changeToLevel(myLevelNumber);
+            //myScene = setupGame(SIZE,SIZE,BACKGROUND,myLevel);
+            stage.setScene(myScene);
+            stage.show();
+        }
     }
     private void moveBall(Ball ballToMove, double elapsedTime){
         ballToMove.updateBallCenter(elapsedTime);
@@ -212,6 +224,7 @@ public class Main extends Application{
                     }
                     if (myBrick.getHitsRemaining() == 0) {
                         myBrick.deleteBrick();
+                        myLevel.incrementBricksDestroyed();
                         root.getChildren().remove(myBrick.getNode());
                     }
                 }
@@ -324,7 +337,7 @@ public class Main extends Application{
         paddleCanMove = false;
     }
     public void changeToLevel(int levelNumber) {
-
+        myLevel = setUpLevel("level"+levelNumber);
     }
     public void updateRootNewBall(){
         root.getChildren().remove(myBall.getNode());
