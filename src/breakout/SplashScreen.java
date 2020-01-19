@@ -15,6 +15,7 @@ import java.awt.event.ActionEvent;
 public class SplashScreen extends Application {
 
     private Scene splash;
+    private Button button;
     private Group root;
     private int big = 40;
     private Paint backgroundColor = Color.LAVENDERBLUSH;
@@ -36,9 +37,9 @@ public class SplashScreen extends Application {
         introText.setLayoutY(size/2);
         root.getChildren().add(introText);
 
-        Button btn = new Button();
-        btn.setText(startingInstructions);
-        root.getChildren().add(btn);
+        button = new Button();
+        button.setText(startingInstructions);
+        root.getChildren().add(button);
         primaryStage.setScene(splash);
         primaryStage.setTitle(intro);
 
@@ -48,7 +49,9 @@ public class SplashScreen extends Application {
     public Scene getNode(){
         return splash;
     }
-
+    public Button getButton(){
+        return button;
+    }
     public static void main(String[] args) {
         /*SplashScreen test = new SplashScreen();
         start(test.getNode());*/

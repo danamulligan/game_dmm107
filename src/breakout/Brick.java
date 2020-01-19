@@ -5,7 +5,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 
 public class Brick {
-    private Paint[] hitsNeededColors = {Color.AZURE, Color.LIGHTCORAL, Color.PALEGOLDENROD, Color.PINK, Color.GREEN, Color.BLUE, Color.PEACHPUFF, Color.BLACK};;
+    public static final Paint[] HITS_NEEDED_COLORS = {Color.AZURE, Color.LIGHTCORAL, Color.PALEGOLDENROD, Color.PINK, Color.GREEN, Color.BLUE, Color.PEACHPUFF, Color.BLACK};;
     public static final int BRICK_WIDTH = 20;
     public static final int BRICK_HEIGHT = 20;
 
@@ -14,12 +14,12 @@ public class Brick {
     private Paint brickColor;
     public boolean brickIsDestroyed;
     public boolean currentlyBeingHit;
-    private String powerUpType;
+    //private String powerUpType;
 
-    public Brick(int hits, int xPosition, int yPosition, String powerUp){
-        powerUpType = powerUp;
+    public Brick(int hits, int xPosition, int yPosition){//, String powerUp){
+        //powerUpType = powerUp;
         hitsNeededToBreak = hits;
-        brickColor = hitsNeededColors[hits];
+        brickColor = HITS_NEEDED_COLORS[hits];
         brickIsDestroyed = (hits == 0); //is this valid?
         if(!brickIsDestroyed){
             myBrick = new Rectangle(xPosition, yPosition, BRICK_WIDTH, BRICK_HEIGHT);
@@ -31,14 +31,14 @@ public class Brick {
         }
     }
     public Brick(){
-        this(0,0,0,null);
+        this(0,0,0);
     }
-    public Brick(int hits, int XPosition, int YPosition){
-        this(hits, XPosition, YPosition, null);
-    }
-    public Brick(String powerUpType, int XPosition, int YPosition){
-        this(1, XPosition, YPosition, powerUpType);
-    }
+   // public Brick(int hits, int XPosition, int YPosition){
+        //this(hits, XPosition, YPosition, null);
+    //}
+    //public Brick(String powerUpType, int XPosition, int YPosition){
+        //this(1, XPosition, YPosition);
+    //}
     public void brickIsHit(){
         hitsNeededToBreak -= 1;
         currentlyBeingHit = true;
@@ -64,7 +64,7 @@ public class Brick {
         return hitsNeededToBreak;
     }
     public void updateBrickColor(){
-        brickColor = hitsNeededColors[hitsNeededToBreak];
+        brickColor = HITS_NEEDED_COLORS[hitsNeededToBreak];
         myBrick.setFill(brickColor);
     }
     public boolean isBrickDestroyed(){

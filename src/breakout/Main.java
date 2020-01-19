@@ -48,6 +48,7 @@ public class Main extends Application{
     private int myLives;
     //private int myLevelNumber;
     private int myScore;
+    private Level myLevel;
     private Level myLevel1;
     private Level myLevel2;
     private Level myLevel3;
@@ -55,6 +56,7 @@ public class Main extends Application{
     private boolean laserIsOnBoard = false;
     private boolean paddleIsNormal;
     private Group root;
+    private int deadBrickCounter;
     private boolean paddleCanMove;
     private boolean bonusBallExists = false;
 
@@ -66,19 +68,18 @@ public class Main extends Application{
     public void start (Stage stage) {
         // attach scene to the stage and display it
         mySplash = new SplashScreen();
+        mySplash.start(stage);
         stage.setScene(mySplash.getNode());
         stage.setTitle(TITLE);
         myLives = 3;
         myScore = 0;
-        //mySplash.getNode().setOnKeyPressed(e -> handleKeyInput(e.getCode()));
-        //if()
         myScene = setupGame(SIZE, SIZE, BACKGROUND, "level1");
-        stage.setScene(myScene);
+        mySplash.getButton().setOnAction(e -> stage.setScene(myScene));
+        //if()
+        //myScene = setupGame(SIZE, SIZE, BACKGROUND, "level1");
+        //stage.setScene(myScene);
 
         stage.show();
-
-        Level myLevel = setUpLevel("level1");
-        addNewLevelToRoot(myLevel);
 
         // attach "game loop" to timeline to play it (basically just calling step() method repeatedly forever)
         KeyFrame frame = new KeyFrame(Duration.millis(MILLISECOND_DELAY), e -> step(SECOND_DELAY, myLevel));
@@ -86,12 +87,13 @@ public class Main extends Application{
         animation.setCycleCount(Timeline.INDEFINITE);
         animation.getKeyFrames().add(frame);
         animation.play();
+
     }
     private Scene setupGame (int width, int height, Paint background, String levelName) {
         // create one top level collection to organize the things in the scene
         /*Group*/ root = new Group();
         //myLives = 3; //TODO set up this in each level
-        //myScore = 0;
+        deadBrickCounter = 0;
 
         myBall = new Ball();
         bonusBallExists = false;
@@ -108,9 +110,9 @@ public class Main extends Application{
         addNewLevelToRoot(myLevel2);
         myLevel3 = setUpLevel("level3");
         addNewLevelToRoot(myLevel3);*/
-        /*
+
         myLevel = setUpLevel(levelName);
-        addNewLevelToRoot(myLevel);*/
+        root.getChildren().add(getLevelRoot(myLevel));
 
         //root.getChildren().add(bonusBall.getNode());
 
@@ -289,6 +291,11 @@ public class Main extends Application{
         else if (code == KeyCode.Q){ //quit
             endGame();
         }
+        else if (code == KeyCode.B){
+            //myLevel = setUpLevel("level1");
+            // addNewLevelToRoot(myLevel);
+
+        }
         else if (code == KeyCode.DIGIT1){
             changeToLevel(1);
         }
@@ -341,12 +348,14 @@ public class Main extends Application{
         }
         return false;
     }
-    public void addNewLevelToRoot(Level levelToBeAdded){
+    public Group getLevelRoot(Level levelToBeAdded){
+        Group levelRoot = new Group();
         for(int row=0; row<SIZE/BRICK_HEIGHT; row++){
             for(int col=0; col<SIZE/BRICK_WIDTH; col++){
-                root.getChildren().add(levelToBeAdded.getBrickNode(row,col));
+                levelRoot.getChildren().add(levelToBeAdded.getBrickNode(row,col));
             }
         }
+        return levelRoot;
     }
     /**
      * reason why I have this method is because it's "one" object, and I want to read it as such

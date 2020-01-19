@@ -16,6 +16,7 @@ public class Level {
     int brickWidth;
     int brickHeight;
     int totalNumberOfBricks = 0;
+    private boolean[][] clear;
 
     public Level(File filename){
         try{
@@ -32,6 +33,7 @@ public class Level {
                         hitsNeeded[row][col] = sc.nextInt();
                         locationInfoX[row][col] = col*brickWidth;
                         locationInfoY[row][col] = row*brickHeight;
+                        //clear[row][col] = (hitsNeeded[row][col]==0);
                        // System.out.println("Hits Needed: " + hitsNeeded[row][col] + " X: "+locationInfoX[row][col]+" Y: "+locationInfoY[row][col]);
                         totalNumberOfBricks++;
                     }
@@ -62,6 +64,9 @@ public class Level {
     }
     public Rectangle getBrickNode(int row, int col){
         return myBricks[row][col].getNode();
+    }
+    public boolean getBrickClear(int row, int col){
+        return clear[row][col];
     }
 
     public static void main(String[] args) {
