@@ -11,24 +11,25 @@ public class Paddle {
     private Rectangle paddleMiddle;
     private Rectangle paddleRight;
     public static final int SCREEN_SIZE = Main.SIZE; //should i take it out and just ref it as main.size?
-    public double basicPaddleWidth = 81; //divisible by 9
+    public static final int BASIC_PADDLE_WIDTH = 81; //divisible by 9
     public static final int PADDLE_HEIGHT = 10;
     public static final Paint paddleColor = Color.PINK;
+    private double actualPaddleWidth;
     private int paddleSpeed = 10;
 
     public Paddle(int scale, String changeBy){
-        double paddleWidth = basicPaddleWidth;
+        actualPaddleWidth = BASIC_PADDLE_WIDTH;
         if(changeBy.equals("grow")){
-            paddleWidth = basicPaddleWidth*scale;
+            actualPaddleWidth = BASIC_PADDLE_WIDTH*scale;
         }
         else if(changeBy.equals("shrink")){
-            paddleWidth /= scale;
+            actualPaddleWidth /= scale;
         }
-        paddleLeft = new Rectangle(Main.SIZE/2-paddleWidth/2, Main.SIZE-PADDLE_HEIGHT-Main.GAP, paddleWidth/3, PADDLE_HEIGHT);
+        paddleLeft = new Rectangle(Main.SIZE/2-actualPaddleWidth/2, Main.SIZE-PADDLE_HEIGHT-Main.GAP, actualPaddleWidth/3, PADDLE_HEIGHT);
         paddleLeft.setFill(Color.GREEN); //change later to paddleColor
-        paddleMiddle = new Rectangle(Main.SIZE/2-paddleWidth/6, Main.SIZE-PADDLE_HEIGHT-Main.GAP, paddleWidth/3, PADDLE_HEIGHT);
+        paddleMiddle = new Rectangle(Main.SIZE/2-actualPaddleWidth/6, Main.SIZE-PADDLE_HEIGHT-Main.GAP, actualPaddleWidth/3, PADDLE_HEIGHT);
         paddleMiddle.setFill(Color.BLUE); //change later to paddleColor
-        paddleRight = new Rectangle(Main.SIZE/2+paddleWidth/6, Main.SIZE-PADDLE_HEIGHT-Main.GAP, paddleWidth/3, PADDLE_HEIGHT);
+        paddleRight = new Rectangle(Main.SIZE/2+actualPaddleWidth/6, Main.SIZE-PADDLE_HEIGHT-Main.GAP, actualPaddleWidth/3, PADDLE_HEIGHT);
         paddleRight.setFill(Color.RED); //change later to paddleColor
     }
     public Paddle(){
@@ -45,18 +46,13 @@ public class Paddle {
         paddleMiddle.setX(paddleMiddle.getX() + sign * paddleSpeed);
         paddleRight.setX(paddleRight.getX() + sign * paddleSpeed);
     }
-    /*
-    public void moveRight(){
-        paddleLeft.setX(paddleLeft.getX() + paddleSpeed);
-        paddleMiddle.setX(paddleMiddle.getX() + paddleSpeed);
-        paddleRight.setX(paddleRight.getX() + paddleSpeed);
+    public double getActualPaddleWidth(){
+        return actualPaddleWidth;
     }
-    public void moveLeft(){
-        paddleLeft.setX(paddleLeft.getX() - paddleSpeed);
-        paddleMiddle.setX(paddleMiddle.getX() - paddleSpeed);
-        paddleRight.setX(paddleRight.getX() - paddleSpeed);
+    public double getLeftX(){
+        return paddleLeft.getX();
     }
-     */
+
     public Rectangle getNodeLeft(){
         return paddleLeft;
     }
@@ -66,7 +62,4 @@ public class Paddle {
     public Rectangle getNodeRight(){
         return paddleRight;
     }
-
-
-
 }

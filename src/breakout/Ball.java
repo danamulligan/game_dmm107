@@ -18,6 +18,7 @@ public class Ball{
     private int basicBallSpeed = Main.BASIC_BALL_SPEED;
     private int paddleHeight = Paddle.PADDLE_HEIGHT;
     private int gap;
+    private boolean canHit;
 
     public Ball(){
         this(ballRadius, ballColor);
@@ -30,6 +31,7 @@ public class Ball{
     }
     public Ball(int newRadius, Paint newBallColor){
         ball = new Circle(startingXPosition, startingYPosition, newRadius, newBallColor);
+        canHit = true;
         //ballXSpeed = 0;
         //ballYSpeed = 0;
     }
@@ -50,18 +52,25 @@ public class Ball{
         ballYSpeed *= -1;
     }
     public void bounceSideWall(){
+        bounceSideBrick();
+        canHit = true;
+    }
+    public void bounceSideBrick(){
         ballXSpeed *= -1;
     }
     public void bouncePaddleLeft(){
         ballXSpeed = -1 * Math.random() * Math.abs(basicBallSpeed/2)-basicBallSpeed/2;
         ballYSpeed *= -1;
+        canHit = true;
     }
     public void bouncePaddleMiddle(){
         bounceY();
+        canHit = true;
         ballXSpeed = 0;
     }
     public void bouncePaddleRight(){
         ballXSpeed = Math.random()*Math.abs(basicBallSpeed);
+        canHit = true;
         ballYSpeed *= -1;
     }
     //TODO IF YOU ALWAYS PAIR THESE TWO THEN MAKE THEM ONE METHOD
@@ -90,6 +99,15 @@ public class Ball{
     }
     public double ballCenterY(){
         return ball.getCenterY();
+    }
+    public void ballHitABrick(){
+        canHit = false;
+    }
+    public void resetHitCapabilities(){
+        canHit = true;
+    }
+    public boolean getHitStatus(){
+        return canHit;
     }
     public Circle getNode(){
         return ball;

@@ -17,12 +17,12 @@ public class Level {
     int brickHeight;
     int totalNumberOfBricks = 0;
 
-    public void setLevelInformation(File filename, int SCREEN_SIZE, int BRICK_WIDTH, int BRICK_HEIGHT){
+    public Level(File filename){
         try{
             Scanner sc = new Scanner(filename); //red line bc you're not checking that filename is a valid file
-            screenSize = SCREEN_SIZE;
-            brickWidth = BRICK_WIDTH;
-            brickHeight = BRICK_HEIGHT;
+            screenSize = Main.SIZE;
+            brickWidth = Brick.BRICK_WIDTH;
+            brickHeight = Brick.BRICK_HEIGHT;
             hitsNeeded = new int[screenSize/brickHeight][screenSize/brickWidth];
             locationInfoX = new int[screenSize/brickHeight][screenSize/brickWidth];
             locationInfoY = new int[screenSize/brickHeight][screenSize/brickWidth];
@@ -32,7 +32,7 @@ public class Level {
                         hitsNeeded[row][col] = sc.nextInt();
                         locationInfoX[row][col] = col*brickWidth;
                         locationInfoY[row][col] = row*brickHeight;
-                        System.out.println("Hits Needed: " + hitsNeeded[row][col] + " X: "+locationInfoX[row][col]+" Y: "+locationInfoY[row][col]);
+                       // System.out.println("Hits Needed: " + hitsNeeded[row][col] + " X: "+locationInfoX[row][col]+" Y: "+locationInfoY[row][col]);
                         totalNumberOfBricks++;
                     }
                 }
@@ -40,7 +40,7 @@ public class Level {
         } catch (FileNotFoundException e){
             e.printStackTrace();
         }
-
+        setUpLevel();
     }
     public void setUpLevel(){
         myBricks = new Brick[screenSize/brickHeight][screenSize/brickWidth];
@@ -55,19 +55,18 @@ public class Level {
                     holder = new Brick(hitsNeeded[row][col], locationInfoX[row][col], locationInfoY[row][col]);
                 }
                 myBricks[row][col] = holder;
-                System.out.println("Made a brick that needs " + hitsNeeded[row][col] + " hits at X: "+locationInfoX[row][col]+" Y: "+locationInfoY[row][col]);
+                //System.out.println("Made a brick that needs " + hitsNeeded[row][col] + " hits at X: "+locationInfoX[row][col]+" Y: "+locationInfoY[row][col]);
             }
         }
-        System.out.println("done with setUpLevel()");
+        //System.out.println("done with setUpLevel()");
     }
     public Rectangle getBrickNode(int row, int col){
         return myBricks[row][col].getNode();
     }
 
     public static void main(String[] args) {
-        Level test = new Level();
         File testFile = new File("/Users/danamulligan/Archives/workspace308/game_dmm107/doc/testFileLevel");
-        test.setLevelInformation(testFile, 400, 20, 10);
+        Level test = new Level(testFile);
         test.setUpLevel();
     }
 }
