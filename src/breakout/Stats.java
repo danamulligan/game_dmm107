@@ -6,7 +6,7 @@ package breakout;
  * Assumptions:
  *      We're not going to go down a level for any reason
  *      There can only ever be one penalty in the game at one time
- * Stats doesn't depend on any other Classes
+ * Stats doesn't depend on any other Classes, but does depend on the package breakout
  * Use a Stats object by changing the values of the instance variables using the setter methods,
  *      and getters to get their values
  */

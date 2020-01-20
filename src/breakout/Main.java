@@ -18,7 +18,7 @@ import java.io.File;
  * @author danamulligan
  * Purpose: Control breakout gameplay
  * Assumptions:
- *      There will only ever be one penalty or power up in each level
+ *      There can only ever be one penalty or power up on the screen at one time, otherwise it'll get stuck as it falls
  *      The Ball can only break one brick at a time. It must bounce off of a wall or the paddle to break another one
  * Main depends on the following classes:
  *      Ball
@@ -34,6 +34,7 @@ import java.io.File;
  *      Shield
  *      SplashScreen
  *      Stats
+ *          and the breakout package
  * To play the breakout game, run main
  */
 public class Main extends Application{
