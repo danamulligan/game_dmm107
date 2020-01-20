@@ -8,21 +8,22 @@ import javafx.scene.shape.Circle;
 public class Ball{
 
     private Circle ball;
-    public static final int ballRadius = 8;
+    public static final int BALL_RADIUS = 8;
+    public static final int BASIC_BALL_SPEED = 100;
     //private int screenSize = Main.SIZE;
     private int startingXPosition = Main.SIZE/2;
-    private int startingYPosition = Main.SIZE-ballRadius-Main.GAP-Paddle.PADDLE_HEIGHT;
+    private int startingYPosition = Main.SIZE-BALL_RADIUS-Main.GAP-Paddle.PADDLE_HEIGHT;
     private double ballYSpeed;
     private double ballXSpeed;
     public static final Paint ballColor = Color.GREY;
     //private Paint bonusBallColor = Color.PURPLE;
-    private int basicBallSpeed = Main.BASIC_BALL_SPEED;
+
     private int paddleHeight = Paddle.PADDLE_HEIGHT;
     private int gap;
     private boolean canHit;
 
     public Ball(){
-        this(ballRadius, ballColor);
+        this(BALL_RADIUS, ballColor);
     }
     public Ball(int newRadius){
         this(newRadius, ballColor);
@@ -43,7 +44,7 @@ public class Ball{
         ballXSpeed = BALL_X_SPEED/Math.abs(BALL_X_SPEED) * (Math.random() * basicBallSpeed/2 + basicBallSpeed/2);
     }*/
     public void beginMovingBall(){
-        ballYSpeed = -1 * basicBallSpeed;
+        ballYSpeed = -1 * BASIC_BALL_SPEED;
     }
     public void freeze(){
         ballXSpeed = 0;
@@ -60,7 +61,7 @@ public class Ball{
         ballXSpeed *= -1;
     }
     public void bouncePaddleLeft(){
-        ballXSpeed = -1 * Math.random() * Math.abs(basicBallSpeed/2)-basicBallSpeed/2;
+        ballXSpeed = -1 * Math.random() * Math.abs(BASIC_BALL_SPEED/2)-BASIC_BALL_SPEED/2;
         ballYSpeed *= -1;
         canHit = true;
     }
@@ -70,7 +71,7 @@ public class Ball{
         ballXSpeed = 0;
     }
     public void bouncePaddleRight(){
-        ballXSpeed = Math.random()*Math.abs(basicBallSpeed);
+        ballXSpeed = Math.random()*BASIC_BALL_SPEED;
         canHit = true;
         ballYSpeed *= -1;
     }
@@ -88,6 +89,18 @@ public class Ball{
             ballYSpeed /= scale;
             ballXSpeed /= scale;
         }
+    }
+    public void moveBall(KeyCode direction){
+        int sign = 1;
+        if(direction == KeyCode.LEFT){
+            sign = -1;
+        } else if (direction == KeyCode.RIGHT){
+            sign = 1;
+        }
+        ball.setCenterX(ball.getCenterX() + sign * Paddle.BASIC_PADDLE_SPEED);
+    }
+    public void grow(){
+        ball.setRadius(BALL_RADIUS*2);
     }
     public double getBallXSpeed() {
         return ballXSpeed;
