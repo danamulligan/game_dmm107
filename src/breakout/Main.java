@@ -39,8 +39,9 @@ public class Main extends Application{
     public static final int STARTING_LIVES = 3;
 
     private Scene myScene;
-    private Stage myStage;
+    private Stage myStage = new Stage();
     private SplashScreen mySplash;
+    private EndScreen myEndScreen;
     private Scene holder;
     private Paddle myPaddle;
     private Ball myBall;
@@ -50,13 +51,12 @@ public class Main extends Application{
     private int myLevelNumber;
     private int myScore;
     private Level myLevel;
-    private Level myLevel1;
-    private Level myLevel2;
-    private Level myLevel3;
     private Laser myLaser;
     private boolean laserIsOnBoard = false;
     private boolean paddleIsNormal;
+    private boolean gamePlayAllowed;
     private Group root;
+    private Timeline animation;
     private int deadBrickCounter;
     private boolean paddleCanMove;
     private boolean bonusBallExists = false;
@@ -69,30 +69,32 @@ public class Main extends Application{
     public void start (Stage stage) {
         // attach scene to the stage and display it
         mySplash = new SplashScreen();
-        mySplash.start(stage);
-        stage.setScene(mySplash.getNode());
-        stage.setTitle(TITLE);
-        myLives = 3;
+        mySplash.start(myStage);
+        myStage.setScene(mySplash.getNode());
+        myStage.setTitle(TITLE);
+        myLives = STARTING_LIVES;
+        gamePlayAllowed = true;
         myScore = 0;
         myLevelNumber=1;
         changeToLevel(myLevelNumber);
-        myScene = setupGame(SIZE, SIZE, BACKGROUND, myLevel);
-        mySplash.getButton().setOnAction(e -> stage.setScene(myScene));
+        myScene = setupGame(SIZE, SIZE, BACKGROUND);//, myLevel);
+        mySplash.getButton().setOnAction(e -> myStage.setScene(myScene));
 
         //myScene = setupGame(SIZE, SIZE, BACKGROUND, "level1");
         //stage.setScene(myScene);
 
-        stage.show();
+        myStage.show();
 
         // attach "game loop" to timeline to play it (basically just calling step() method repeatedly forever)
-        KeyFrame frame = new KeyFrame(Duration.millis(MILLISECOND_DELAY), e -> step(SECOND_DELAY, myLevel, stage));
-        Timeline animation = new Timeline();
-        animation.setCycleCount(Timeline.INDEFINITE);
-        animation.getKeyFrames().add(frame);
-        animation.play();
-
+        //if(gamePlayAllowed) {
+            KeyFrame frame = new KeyFrame(Duration.millis(MILLISECOND_DELAY), e -> step(SECOND_DELAY, stage));
+            /*Timeline */animation = new Timeline();
+            animation.setCycleCount(Timeline.INDEFINITE);
+            animation.getKeyFrames().add(frame);
+            animation.play();
+        //}
     }
-    private Scene setupGame (int width, int height, Paint background, Level currentLevel) {
+    private Scene setupGame (int width, int height, Paint background){//, Level currentLevel) {
         // create one top level collection to organize the things in the scene
         /*Group*/ root = new Group();
         //myLives = 3; //TODO set up this in each level
@@ -116,7 +118,7 @@ public class Main extends Application{
         addNewLevelToRoot(myLevel3);*/
 
         //myLevel = setUpLevel(levelName);
-        root.getChildren().add(getLevelRoot(currentLevel));
+        root.getChildren().add(getLevelRoot(myLevel/*currentLevel*/));
 
         //root.getChildren().add(bonusBall.getNode());
 
@@ -136,7 +138,7 @@ public class Main extends Application{
 // ====================================================================================================================
     // Change properties of shapes in small ways to animate them over time
     // Note, there are more sophisticated ways to animate shapes, but these simple ways work fine to start
-    private void step (double elapsedTime, Level myLevel, Stage stage) {
+    private void step (double elapsedTime/*, Level myLevel*/, Stage stage) {
         // move ball
         //bounce ball on paddle
         hitBricks(myBall.getNode(), "ball", myLevel);
@@ -153,12 +155,15 @@ public class Main extends Application{
         }
         bounceBallsOffWalls();
         if(myLevel.isClear()){
-            myLevelNumber++;
-            System.out.println("changing to level "+myLevelNumber);
-            changeToLevel(myLevelNumber);
-            //myScene = setupGame(SIZE,SIZE,BACKGROUND,myLevel);
-            stage.setScene(myScene);
-            stage.show();
+            if(myLevelNumber == 3){
+                endGame();
+            } else {
+                myLevelNumber++;
+                System.out.println("changing to level "+myLevelNumber);
+                changeToLevel(myLevelNumber);
+                myScene = setupGame(SIZE,SIZE,BACKGROUND);//,myLevel);
+                myStage.setScene(myScene);
+                myStage.show();}
         }
     }
     private void moveBall(Ball ballToMove, double elapsedTime){
@@ -178,7 +183,7 @@ public class Main extends Application{
         }
         if(myBall.ballCenterY()+BALL_RADIUS>=SIZE) {
             myLives--;
-            resetGame();
+            resetBallAndPaddle();
         }/*
         if(bonusBallExists && (bonusBall.ballCenterX()+BALL_RADIUS>=SIZE || bonusBall.ballCenterX()<=0)) {
             bonusBall.bounceSideWall();
@@ -298,7 +303,7 @@ public class Main extends Application{
             System.out.println("Plus one life! You now have "+myLives+" lives");
         }
         else if (code == KeyCode.R){ //reset
-            resetGame();
+            resetLevel();
             myLives = STARTING_LIVES;
         }
         else if (code == KeyCode.Q){ //quit
@@ -322,22 +327,41 @@ public class Main extends Application{
 // ====================================================================================================================
 // helper methods!
 // ====================================================================================================================
-    public void resetGame(){
+    public void resetLevel(){
+        root.getChildren().remove(getLevelRoot(myLevel));
+        changeToLevel(myLevelNumber);
+        root.getChildren().add(getLevelRoot(myLevel));
+        resetBallAndPaddle(); //to reset it to the center
+    }
+    public void resetBallAndPaddle(){
         startingAllowed = true;
         paddleCanMove = false;
+        paddleIsNormal = true;
         updateRootNewBall();
-        updateRootNewPaddle(); //to reset it to the center
+        updateRootNewPaddle();
     }
+
     public void endGame(){
         //TODO
         //display end game value
         //for now, so that I can see that it's working, not let space be pressed!
+        animation.stop();
+        gamePlayAllowed = false;
+        System.out.println("Your score is " +myScore);
+        myEndScreen = new EndScreen();
+        myEndScreen.setGameScore(myScore);
+        myEndScreen.start(myStage);
+
+        root.getChildren().add(myEndScreen.getRoot());
+        myStage.setScene(myEndScreen.getNode());
         myBall.freeze();
         startingAllowed = false;
         paddleCanMove = false;
     }
     public void changeToLevel(int levelNumber) {
+        myLives = STARTING_LIVES;
         myLevel = setUpLevel("level"+levelNumber);
+        //root.getChildren().add(getLevelRoot(myLevel));
     }
     public void updateRootNewBall(){
         root.getChildren().remove(myBall.getNode());
