@@ -96,8 +96,8 @@ public class Main extends Application{
     }
     private Scene setupGame (int width, int height, Paint background){//, Level currentLevel) {
         // create one top level collection to organize the things in the scene
-        /*Group*/ root = new Group();
-        //myLives = 3; //TODO set up this in each level
+        root = new Group();
+
         deadBrickCounter = 0;
         startingAllowed = true;
 
@@ -109,13 +109,6 @@ public class Main extends Application{
         paddleCanMove = false;
         paddleIsNormal = true;
         addPaddleToRoot();
-
-        /*myLevel1 = setUpLevel("level1");
-        addNewLevelToRoot(myLevel1);
-        myLevel2 = setUpLevel("level2");
-        addNewLevelToRoot(myLevel2);
-        myLevel3 = setUpLevel("level3");
-        addNewLevelToRoot(myLevel3);*/
 
         //myLevel = setUpLevel(levelName);
         root.getChildren().add(getLevelRoot(myLevel/*currentLevel*/));
@@ -146,10 +139,12 @@ public class Main extends Application{
             hitBricks(myLaser.getLeftLaserBeamNode(), "laser left", myLevel);
             hitBricks(myLaser.getRightLaserBeamNode(), "laser right", myLevel);
             myLaser.moveLasers(elapsedTime);
+            updateLaserStatus();
         }
         moveBall(myBall, elapsedTime);
         bounceBallOffPaddle(myBall);
         if(bonusBallExists){
+            hitBricks(bonusBall.getNode(), "bonus ball", myLevel);
             moveBall(bonusBall, elapsedTime);
             bounceBallOffPaddle(bonusBall);
         }
@@ -159,7 +154,6 @@ public class Main extends Application{
                 endGame();
             } else {
                 myLevelNumber++;
-                System.out.println("changing to level "+myLevelNumber);
                 changeToLevel(myLevelNumber);
                 myScene = setupGame(SIZE,SIZE,BACKGROUND);//,myLevel);
                 myStage.setScene(myScene);
@@ -198,33 +192,23 @@ public class Main extends Application{
         }
     }
     private void hitBricks(Shape breaker, String label, Level myLevel){
-        //TODO change this to send it down into level class
-        Brick myBrick;
-
         for(int row = 0; row<SIZE/Brick.BRICK_HEIGHT; row++) {
             for (int col = 0; col < SIZE/Brick.BRICK_WIDTH; col++) {
-                myBrick = myLevel.myBricks[row][col];
-                boolean breakerHitStatus = getBreakerHitStatus(label);
-                if (!myBrick.isBrickDestroyed() && breakerHitStatus){//&&!myBrick.getHitStatus()){
+                Brick myBrick = myLevel.myBricks[row][col];
+                if (!myBrick.isBrickDestroyed() && getBreakerHitStatus(label)){
                     Shape intersectionBrick = Shape.intersect(breaker, myBrick.getNode());
-                    if(intersectionBrick.getBoundsInLocal().getWidth() != -1 /*&& myBrick.getHitsRemaining()!=0 && !myBrick.getHitStatus()*/) {
+                    if(intersectionBrick.getBoundsInLocal().getWidth() != -1) {
                         if(label.equals("ball")){
                             myBall.bounceY();
-                            //myBall.bounceSideBrick();
                             myBall.ballHitABrick();
                         }
-                        myBrick.brickIsHit();
                         if(label.equals("laser left")) {
                             myLaser.leftLaserHitABrick();
-                            //root.getChildren().remove(myLaser.getLeftLaserBeamNode());
-                            myLaser.destroyLaserBeamLeft();
                         }
                         if(label.equals("laser right")){
                             myLaser.rightLaserHitABrick();
-                            //root.getChildren().remove(myLaser.getRightLaserBeamNode());
-                            myLaser.destroyLaserBeamRight();
                         }
-                        //myBrick.resetHitStatusToFalse();
+                        myBrick.brickIsHit();
                         myScore += 100;
                     }
                     if (myBrick.getHitsRemaining() == 0) {
@@ -236,73 +220,67 @@ public class Main extends Application{
             }
         }
     }
+    private void updateBreakerObject(){
+
+    }
     private void bounceBallOffPaddle(Ball ballToBounce){
         Shape intersectionLeft = Shape.intersect(ballToBounce.getNode(), myPaddle.getNodeLeft());
         Shape intersectionMiddle = Shape.intersect(ballToBounce.getNode(), myPaddle.getNodeMiddle());
         Shape intersectionRight = Shape.intersect(ballToBounce.getNode(), myPaddle.getNodeRight());
         if (intersectionLeft.getBoundsInLocal().getWidth() != -1) {
             ballToBounce.bouncePaddleLeft();
-            //myBall.resetHitCapabilities();
         }
         if (intersectionMiddle.getBoundsInLocal().getWidth() != -1) {
             ballToBounce.bouncePaddleMiddle();
-            //myBall.resetHitCapabilities();
         }
         if (intersectionRight.getBoundsInLocal().getWidth() != -1) {
             ballToBounce.bouncePaddleRight();
-            //myBall.resetHitCapabilities();
         }
         if((intersectionLeft.getBoundsInLocal().getWidth()!=-1 || intersectionRight.getBoundsInLocal().getWidth()!=-1) && intersectionMiddle.getBoundsInLocal().getWidth()!=-1){
             ballToBounce.bounceY();
-           // myBall.resetHitCapabilities();
         }
     }
+    private void updateLaserStatus(){
+        if(laserIsOnBoard){
+            //this case covers if one or both of the laser beams pass the edge... essentially, the case where both miss, or one hits and the other misses
+            if(myLaser.getLeftLaserBeamNode().getY()+Laser.Laser_HEIGHT<=0 || myLaser.getRightLaserBeamNode().getY()+Laser.Laser_HEIGHT<=0){
+                laserIsOnBoard = false;
+            }
+            //both hit a target
+            if(!myLaser.getLeftLaserHitStatus() && !myLaser.getRightLaserHitStatus()){
+                laserIsOnBoard = false;
+            }
+        }
+    }
+
 // ====================================================================================================================
 // key input (cheat keys)
 // ====================================================================================================================
     // What to do each time a key is pressed
     private void handleKeyInput (KeyCode code) {
         if (code == KeyCode.RIGHT && paddleCanMove) { //might need to rename this var, or make it a dif one
-            //TODO create a separate paddle allowed var?
             myPaddle.movePaddle("right");
         }
         else if (code == KeyCode.LEFT && paddleCanMove) {
             myPaddle.movePaddle("left");
         }
-        else if (code == KeyCode.SPACE && startingAllowed){
-            startingAllowed = false;
-            paddleCanMove = true;
-            myBall.beginMovingBall();
-            //TODO
+        else if (code == KeyCode.SPACE && startingAllowed){ //start moving the ball
+            beginGameplay();
         }
-        else if (code == KeyCode.G && paddleIsNormal){ //grow
-            removePaddleFromRoot();
-            myPaddle = new Paddle(DOUBLE_IN_SIZE, "grow");
-            paddleIsNormal = false;
-            addPaddleToRoot();
+        else if ((code == KeyCode.G && paddleIsNormal) || (code == KeyCode.S && !paddleIsNormal)){ //grow or shrink the paddle
+            changePaddle(code);
         }
-        else if (code == KeyCode.S && !paddleIsNormal){ //shrink
-            removePaddleFromRoot();
-            myPaddle = new Paddle();//DOUBLE_IN_SIZE, "shrink");
-            paddleIsNormal = true;
-            addPaddleToRoot();
+        else if (code == KeyCode.F || code == KeyCode.T){ //make the ball faster or slower
+            myBall.changeBallSpeed(DOUBLE_IN_SIZE, code);
         }
-        else if (code == KeyCode.F){ //fast
-            myBall.changeBallSpeed(DOUBLE_IN_SIZE, "fast");
-        }
-        else if (code == KeyCode.T){ //slow like a turtle
-            myBall.changeBallSpeed(DOUBLE_IN_SIZE, "slow");
-        }
-        else if (code == KeyCode.Z){
-            myLaser = new Laser(myPaddle.getLeftX(),myPaddle.getActualPaddleWidth());
-            laserIsOnBoard = true;
-            root.getChildren().addAll(myLaser.getLeftLaserBeamNode(), myLaser.getRightLaserBeamNode());
+        else if (code == KeyCode.Z){ //shoot lasers!!
+            shootLasers();
         }
         else if (code == KeyCode.L){ //add a life
             myLives++;
-            System.out.println("Plus one life! You now have "+myLives+" lives");
+            //System.out.println("Plus one life! You now have "+myLives+" lives");
         }
-        else if (code == KeyCode.R){ //reset
+        else if (code == KeyCode.R){ //reset the current level
             resetLevel();
             myLives = STARTING_LIVES;
         }
@@ -310,9 +288,7 @@ public class Main extends Application{
             endGame();
         }
         else if (code == KeyCode.B){
-            //myLevel = setUpLevel("level1");
-            // addNewLevelToRoot(myLevel);
-
+            //TODO Bonus ball??
         }
         else if (code == KeyCode.DIGIT1){
             changeToLevel(1);
@@ -324,9 +300,32 @@ public class Main extends Application{
             changeToLevel(3);
         }
     }
-// ====================================================================================================================
+    // ====================================================================================================================
 // helper methods!
 // ====================================================================================================================
+    private void shootLasers(){
+        if(!laserIsOnBoard){
+            myLaser = new Laser(myPaddle.getLeftX(),myPaddle.getActualPaddleWidth());
+            laserIsOnBoard = true;
+            root.getChildren().addAll(myLaser.getLeftLaserBeamNode(), myLaser.getRightLaserBeamNode());
+        }
+    }
+    private void changePaddle(KeyCode code){
+        removePaddleFromRoot();
+        if(code == KeyCode.S){
+            myPaddle = new Paddle();
+            paddleIsNormal = true;
+        } else if (code == KeyCode.G){
+            myPaddle = new Paddle(DOUBLE_IN_SIZE, code);
+            paddleIsNormal = false;
+        }
+        addPaddleToRoot();
+    }
+    private void beginGameplay() {
+        startingAllowed = false;
+        paddleCanMove = true;
+        myBall.beginMovingBall();
+    }
     public void resetLevel(){
         root.getChildren().remove(getLevelRoot(myLevel));
         changeToLevel(myLevelNumber);

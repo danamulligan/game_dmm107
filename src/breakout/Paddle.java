@@ -1,5 +1,6 @@
 package breakout;
 
+import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Paint;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -17,14 +18,14 @@ public class Paddle {
     private double actualPaddleWidth;
     private int paddleSpeed = 10;
 
-    public Paddle(int scale, String changeBy){
+    public Paddle(int scale, KeyCode code){
         actualPaddleWidth = BASIC_PADDLE_WIDTH;
-        if(changeBy.equals("grow")){
+        if(code == KeyCode.G){
             actualPaddleWidth = BASIC_PADDLE_WIDTH*scale;
         }
-        else if(changeBy.equals("shrink")){
-            actualPaddleWidth /= scale;
-        }
+        //else if(code == KeyCode.S){
+          //  actualPaddleWidth /= scale;
+        //}
         paddleLeft = new Rectangle(Main.SIZE/2-actualPaddleWidth/2, Main.SIZE-PADDLE_HEIGHT-Main.GAP, actualPaddleWidth/3, PADDLE_HEIGHT);
         paddleLeft.setFill(Color.GREEN); //change later to paddleColor
         paddleMiddle = new Rectangle(Main.SIZE/2-actualPaddleWidth/6, Main.SIZE-PADDLE_HEIGHT-Main.GAP, actualPaddleWidth/3, PADDLE_HEIGHT);
@@ -33,7 +34,7 @@ public class Paddle {
         paddleRight.setFill(Color.RED); //change later to paddleColor
     }
     public Paddle(){
-        this(1, "nothing");
+        this(1, null);
     }
     public void movePaddle(String direction){
         int sign = 1;

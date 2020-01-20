@@ -27,24 +27,22 @@ public class Laser {
         leftLaserBeam.setY(leftLaserBeam.getY()-Laser_SPEED);
         rightLaserBeam.setY(rightLaserBeam.getY()-Laser_SPEED);
     }
-    public void destroyLaserBeamLeft(){
-        leftLaserBeam.setX(Main.SIZE);
-        leftLaserBeam.setY(Main.SIZE);
-        leftLaserBeam.setFill(Main.BACKGROUND);
-    }
-    public void destroyLaserBeamRight(){
-        rightLaserBeam.setX(Main.SIZE);
-        rightLaserBeam.setY(Main.SIZE);
-        rightLaserBeam.setFill(Main.BACKGROUND);
-    }
+
     public Rectangle getLeftLaserBeamNode() {
         return leftLaserBeam;
     }
     public void leftLaserHitABrick(){
         leftCanHit = false;
+        leftLaserBeam.setX(Main.SIZE);
+        leftLaserBeam.setY(Main.SIZE);
+        leftLaserBeam.setFill(Main.BACKGROUND);
     }
+
     public void rightLaserHitABrick(){
         rightCanHit = false;
+        rightLaserBeam.setX(Main.SIZE);
+        rightLaserBeam.setY(Main.SIZE);
+        rightLaserBeam.setFill(Main.BACKGROUND);
     }
     public boolean getLeftLaserHitStatus(){
         return leftCanHit;

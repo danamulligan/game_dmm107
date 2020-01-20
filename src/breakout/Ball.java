@@ -1,5 +1,6 @@
 package breakout;
 
+import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
@@ -78,12 +79,12 @@ public class Ball{
         ball.setCenterX(ball.getCenterX() + ballXSpeed * elapsedTime);
         ball.setCenterY(ball.getCenterY() + ballYSpeed * elapsedTime);
     }
-    public void changeBallSpeed(int scale, String typeOfScale){
-        if(typeOfScale.equals("fast")){
+    public void changeBallSpeed(int scale, KeyCode code){
+        if(code == KeyCode.F){
             ballYSpeed *= scale;
             ballXSpeed *= scale;
         }
-        else if(typeOfScale.equals("slow")){
+        else if(code == KeyCode.T){
             ballYSpeed /= scale;
             ballXSpeed /= scale;
         }
