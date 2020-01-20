@@ -6,6 +6,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
+/**
+ * Level is made up of a matrix of Bricks
+ * Depends of Brick class and Main
+ */
 public class Level {
     public Brick[][] myBricks;
     public int[][] hitsNeeded;
