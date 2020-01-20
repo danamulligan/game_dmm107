@@ -33,12 +33,6 @@ public class Brick {
     public Brick(){
         this(0,0,0);
     }
-   // public Brick(int hits, int XPosition, int YPosition){
-        //this(hits, XPosition, YPosition, null);
-    //}
-    //public Brick(String powerUpType, int XPosition, int YPosition){
-        //this(1, XPosition, YPosition);
-    //}
     public void brickIsHit(){
         hitsNeededToBreak -= 1;
         currentlyBeingHit = true;
@@ -62,6 +56,9 @@ public class Brick {
     }
     public int getHitsRemaining(){
         return hitsNeededToBreak;
+    }
+    public PowerUp getPackage(){
+        return null;
     }
     public void updateBrickColor(){
         brickColor = HITS_NEEDED_COLORS[hitsNeededToBreak];

@@ -1,9 +1,6 @@
 package breakout;
 
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.animation.KeyFrame;
@@ -12,8 +9,6 @@ import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.input.KeyCode;
 import javafx.scene.shape.Shape;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -42,8 +37,14 @@ public class Main extends Application{
     private Stage myStage = new Stage();
     private SplashScreen mySplash;
     private EndScreen myEndScreen;
+    private Shield myShield;
+    private boolean shieldExists = false;
     private Scene holder;
     private Paddle myPaddle;
+    private PowerUp myPowerUp;
+    private int myPowerUpsCount;
+    private Penalty myPenalty;
+    private boolean myPenaltyExists = false;
     private Ball myBall;
     private Ball bonusBall;
     private boolean startingAllowed = true;
@@ -75,6 +76,7 @@ public class Main extends Application{
         myLives = STARTING_LIVES;
         gamePlayAllowed = true;
         myScore = 0;
+        myPowerUpsCount = 0;
         myLevelNumber=1;
         changeToLevel(myLevelNumber);
         myScene = setupGame(SIZE, SIZE, BACKGROUND);//, myLevel);
@@ -134,59 +136,75 @@ public class Main extends Application{
     private void step (double elapsedTime/*, Level myLevel*/, Stage stage) {
         // move ball
         //bounce ball on paddle
-        hitBricks(myBall.getNode(), "ball", myLevel);
+        moveAndHitWithBall(myBall, "ball", elapsedTime);
         if(laserIsOnBoard) {
-            hitBricks(myLaser.getLeftLaserBeamNode(), "laser left", myLevel);
-            hitBricks(myLaser.getRightLaserBeamNode(), "laser right", myLevel);
-            myLaser.moveLasers(elapsedTime);
-            updateLaserStatus();
+            moveAndHitWithLasers(elapsedTime);
         }
-        moveBall(myBall, elapsedTime);
-        bounceBallOffPaddle(myBall);
+        if(myPowerUpsCount>0){
+            movePackage(myPowerUp, elapsedTime);
+            catchPenaltyOrPowerUp(myPowerUp);
+        }
+        if(myPenaltyExists){
+            movePackage(myPenalty, elapsedTime);
+            catchPenaltyOrPowerUp(myPenalty);
+        }
         if(bonusBallExists){
-            hitBricks(bonusBall.getNode(), "bonus ball", myLevel);
-            moveBall(bonusBall, elapsedTime);
-            bounceBallOffPaddle(bonusBall);
+            moveAndHitWithBall(bonusBall, "bonus ball", elapsedTime);
         }
-        bounceBallsOffWalls();
         if(myLevel.isClear()){
             if(myLevelNumber == 3){
                 endGame();
             } else {
                 myLevelNumber++;
-                changeToLevel(myLevelNumber);
-                myScene = setupGame(SIZE,SIZE,BACKGROUND);//,myLevel);
-                myStage.setScene(myScene);
-                myStage.show();}
+                updateNewLevel();
+            }
         }
+    }
+
+    private void updateNewLevel() {
+        changeToLevel(myLevelNumber);
+        myScene = setupGame(SIZE,SIZE,BACKGROUND);//,myLevel);
+        myStage.setScene(myScene);
+        myStage.show();
+    }
+
+    private void movePackage(PowerUp myPackage, double elapsedTime){
+        myPackage.updateCenter(elapsedTime);
     }
     private void moveBall(Ball ballToMove, double elapsedTime){
         ballToMove.updateBallCenter(elapsedTime);
     }
+    private void moveAndHitWithLasers(double elapsedTime){
+        hitBricks(myLaser.getLeftLaserBeamNode(), "laser left", myLevel);
+        hitBricks(myLaser.getRightLaserBeamNode(), "laser right", myLevel);
+        myLaser.moveLasers(elapsedTime);
+        updateLaserStatus();
+    }
+    private void moveAndHitWithBall(Ball ball, String label, double elapsedTime){
+        if(shieldExists){
+            bounceBallOffShield(ball);
+        }
+        hitBricks(ball.getNode(), label, myLevel);
+        moveBall(ball, elapsedTime);
+        bounceBallOffPaddle(ball);
+        bounceBallsOffWalls(ball);
+    }
 // ====================================================================================================================
 // managing collisions
 // ====================================================================================================================
-    private void bounceBallsOffWalls(){
-        if(myBall.ballCenterX()+BALL_RADIUS>=SIZE || myBall.ballCenterX()<=0) {
-            myBall.bounceSideWall();
+    private void bounceBallsOffWalls(Ball ball){
+        if(ball.ballCenterX()+BALL_RADIUS>=SIZE || ball.ballCenterX()<=0) {
+            ball.bounceSideWall();
             //myBall.resetHitCapabilities();
         }
-        if(myBall.ballCenterY()<=0) {
-            myBall.bounceY();
-            myBall.resetHitCapabilities();
+        if(ball.ballCenterY()<=0) {
+            ball.bounceY();
+            ball.resetHitCapabilities();
         }
-        if(myBall.ballCenterY()+BALL_RADIUS>=SIZE) {
+        if(ball.ballCenterY()+BALL_RADIUS>=SIZE) {
             myLives--;
             resetBallAndPaddle();
-        }/*
-        if(bonusBallExists && (bonusBall.ballCenterX()+BALL_RADIUS>=SIZE || bonusBall.ballCenterX()<=0)) {
-            bonusBall.bounceSideWall();
-            //myBall.resetHitCapabilities();;
         }
-        if(bonusBallExists && bonusBall.ballCenterY()<=0) {
-            bonusBall.bounceY();
-            myBall.resetHitCapabilities();
-        }*/
         if(myLives == 0){
             endGame();
         }
@@ -202,6 +220,10 @@ public class Main extends Application{
                             myBall.bounceY();
                             myBall.ballHitABrick();
                         }
+                        if(label.equals("bonus ball")){
+                            bonusBall.bounceY();
+                            bonusBall.ballHitABrick();
+                        }
                         if(label.equals("laser left")) {
                             myLaser.leftLaserHitABrick();
                         }
@@ -210,6 +232,17 @@ public class Main extends Application{
                         }
                         myBrick.brickIsHit();
                         myScore += 100;
+                        if(myBrick instanceof PenaltyBrick){
+                            myPenalty = ((PenaltyBrick) myBrick).getPackage();
+                            myPenaltyExists = true;
+                            myLevel.incrementBricksDestroyed();
+                            root.getChildren().add(myPenalty.getNode());
+                        } else if(myBrick instanceof PowerUpBrick){
+                            myPowerUp = myBrick.getPackage();
+                            myPowerUpsCount++;
+                            myLevel.incrementBricksDestroyed();
+                            root.getChildren().add(myPowerUp.getNode());
+                        }
                     }
                     if (myBrick.getHitsRemaining() == 0) {
                         myBrick.deleteBrick();
@@ -220,9 +253,45 @@ public class Main extends Application{
             }
         }
     }
-    private void updateBreakerObject(){
-
+    private void catchPenaltyOrPowerUp(PowerUp myPackage){
+        Shape intersectionLeft = Shape.intersect(myPackage.getNode(), myPaddle.getNodeLeft());
+        Shape intersectionMiddle = Shape.intersect(myPackage.getNode(), myPaddle.getNodeMiddle());
+        Shape intersectionRight = Shape.intersect(myPackage.getNode(), myPaddle.getNodeRight());
+        if (intersectionLeft.getBoundsInLocal().getWidth() != -1 || intersectionMiddle.getBoundsInLocal().getWidth() != -1 || intersectionRight.getBoundsInLocal().getWidth() != -1) {
+            String type = myPackage.getType();
+            //myPowerUpsCount--;
+            myPackage.caught();
+            root.getChildren().remove(myPackage);
+            if (myPackage instanceof Penalty){
+                if(type.equals("neg")) {
+                    myScore -= 100;
+                }
+                if(type.equals("ball speed")) {
+                    myBall.changeBallSpeed(DOUBLE_IN_SIZE, KeyCode.F);;
+                }
+                if(type.equals("paddle size")){
+                    changePaddle(KeyCode.S);
+                }
+                //System.out.println("oops... shouldn't have caught that!");
+                myPenaltyExists = false;
+            } else {
+                if (type.equals("points")) {
+                    myScore += 100;
+                }
+                if (type.equals("paddleSpeed")) {
+                    myPaddle.changePaddleSpeed(DOUBLE_IN_SIZE);
+                }
+                if (type.equals("shield")) {
+                    myShield = new Shield();
+                    root.getChildren().add(myShield.getNode());
+                    shieldExists = true;
+                }
+                myPowerUpsCount--;
+            }
+            //System.out.println("caught");
+        }
     }
+
     private void bounceBallOffPaddle(Ball ballToBounce){
         Shape intersectionLeft = Shape.intersect(ballToBounce.getNode(), myPaddle.getNodeLeft());
         Shape intersectionMiddle = Shape.intersect(ballToBounce.getNode(), myPaddle.getNodeMiddle());
@@ -238,6 +307,14 @@ public class Main extends Application{
         }
         if((intersectionLeft.getBoundsInLocal().getWidth()!=-1 || intersectionRight.getBoundsInLocal().getWidth()!=-1) && intersectionMiddle.getBoundsInLocal().getWidth()!=-1){
             ballToBounce.bounceY();
+        }
+    }
+    private void bounceBallOffShield(Ball ballToBounce){
+        Shape intersection = Shape.intersect(ballToBounce.getNode(), myShield.getNode());
+        if (intersection.getBoundsInLocal().getWidth() != -1) {
+            ballToBounce.bounceY();
+            myShield.shieldIsHit();
+            ballToBounce.resetHitCapabilities();
         }
     }
     private void updateLaserStatus(){
@@ -258,11 +335,11 @@ public class Main extends Application{
 // ====================================================================================================================
     // What to do each time a key is pressed
     private void handleKeyInput (KeyCode code) {
-        if (code == KeyCode.RIGHT && paddleCanMove) { //might need to rename this var, or make it a dif one
-            myPaddle.movePaddle("right");
+        if ((code == KeyCode.RIGHT || code == KeyCode.LEFT) && paddleCanMove) {
+            myPaddle.movePaddle(code);
         }
-        else if (code == KeyCode.LEFT && paddleCanMove) {
-            myPaddle.movePaddle("left");
+        else if ((code == KeyCode.A || code == KeyCode.D) && paddleCanMove) {
+            myPaddle.setXPositions(code);
         }
         else if (code == KeyCode.SPACE && startingAllowed){ //start moving the ball
             beginGameplay();
@@ -289,15 +366,21 @@ public class Main extends Application{
         }
         else if (code == KeyCode.B){
             //TODO Bonus ball??
+            //bonusBallExists = true;
+            //bonusBall = new Ball();
+            //startingAllowed = true;
         }
         else if (code == KeyCode.DIGIT1){
-            changeToLevel(1);
+            myLevelNumber = 1;
+            updateNewLevel();
         }
         else if (code == KeyCode.DIGIT2){
-            changeToLevel(2);
+            myLevelNumber = 2;
+            updateNewLevel();
         }
         else if (code == KeyCode.DIGIT3){
-            changeToLevel(3);
+            myLevelNumber = 3;
+            updateNewLevel();
         }
     }
     // ====================================================================================================================
@@ -313,7 +396,7 @@ public class Main extends Application{
     private void changePaddle(KeyCode code){
         removePaddleFromRoot();
         if(code == KeyCode.S){
-            myPaddle = new Paddle();
+            myPaddle = new Paddle(code);
             paddleIsNormal = true;
         } else if (code == KeyCode.G){
             myPaddle = new Paddle(DOUBLE_IN_SIZE, code);

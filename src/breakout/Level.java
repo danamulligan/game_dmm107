@@ -56,8 +56,23 @@ public class Level {
                 if(hitsNeeded[row][col]==0){
                     holder = new Brick();
                     numberBricksDestroyed++;
-                }
-                else{
+                } else if(hitsNeeded[row][col]==100){
+                    holder = new PowerUpBrick("points", locationInfoX[row][col],locationInfoY[row][col]);
+                } else if(hitsNeeded[row][col]==110){
+                    holder = new PowerUpBrick("paddleSpeed", locationInfoX[row][col], locationInfoY[row][col]);
+                } else if(hitsNeeded[row][col]==120){
+                    holder = new PowerUpBrick("ballRadius", locationInfoX[row][col], locationInfoY[row][col]);
+                } else if(hitsNeeded[row][col]==130){
+                    holder = new PowerUpBrick("bonusBall", locationInfoX[row][col], locationInfoY[row][col]);
+                } else if(hitsNeeded[row][col]==140){
+                    holder = new PowerUpBrick("shield", locationInfoX[row][col], locationInfoY[row][col]);
+                } else if(hitsNeeded[row][col]==-100){
+                    holder = new PenaltyBrick("neg", locationInfoX[row][col],locationInfoY[row][col]);
+                } else if(hitsNeeded[row][col]==-110){
+                    holder = new PenaltyBrick("ball speed", locationInfoX[row][col], locationInfoY[row][col]);
+                } else if(hitsNeeded[row][col]==-120){
+                    holder = new PenaltyBrick("paddle size", locationInfoX[row][col], locationInfoY[row][col]);
+                } else {
                     holder = new Brick(hitsNeeded[row][col], locationInfoX[row][col], locationInfoY[row][col]);
                 }
                 myBricks[row][col] = holder;
