@@ -63,10 +63,8 @@ public class Main extends Application{
     private PowerUp myPowerUp;
     private Penalty myPenalty;
     private Ball myBall;
-    private Ball bonusBall;
     private Group root;
     private Timeline animation;
-    private boolean bonusBallExists = false;
 
 // ====================================================================================================================
 // beginning the game
@@ -159,10 +157,6 @@ public class Main extends Application{
             catchPenaltyOrPowerUp(myPenalty);
         }
 
-        if(bonusBallExists){
-            moveAndHitWithBall(bonusBall, "bonus ball", elapsedTime);
-        }
-
         // if all of the bricks in the current level have been cleared from the scene, check if the game is completed or move to the next level
         if(myLevel.isClear()){
             if(myStats.getMyLevelNumber() == 3){
@@ -244,10 +238,6 @@ public class Main extends Application{
                         if(label.equals("ball")){
                             myBall.bounceY();
                             myBall.ballHitABrick();
-                        }
-                        if(label.equals("bonus ball")){
-                            bonusBall.bounceY();
-                            bonusBall.ballHitABrick();
                         }
                         if(label.equals("laser left")) {
                             myLaser.leftLaserHitABrick();
@@ -376,12 +366,6 @@ public class Main extends Application{
         else if (code == KeyCode.SHIFT){ // shift key was chosen because of sticky keys on the mac
             myStats.setBallIsSticky(true);
             myStats.setStartingAllowed(true);
-        }
-        else if (code == KeyCode.B){
-            //TODO Bonus ball??
-            //bonusBallExists = true;
-            //bonusBall = new Ball();
-            //startingAllowed = true;
         }
         else if (code == KeyCode.DIGIT1 || code == KeyCode.DIGIT2 || code == KeyCode.DIGIT3){
             skipToLevel(code);

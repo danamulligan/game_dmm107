@@ -4,7 +4,6 @@ import javafx.scene.shape.Rectangle;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.time.format.TextStyle;
 import java.util.Scanner;
 
 public class Level {
@@ -21,7 +20,7 @@ public class Level {
 
     public Level(File filename){
         try{
-            Scanner sc = new Scanner(filename); //red line bc you're not checking that filename is a valid file
+            Scanner sc = new Scanner(filename);
             screenSize = Main.SIZE;
             brickWidth = Brick.BRICK_WIDTH;
             brickHeight = Brick.BRICK_HEIGHT;
@@ -35,8 +34,6 @@ public class Level {
                         hitsNeeded[row][col] = sc.nextInt();
                         locationInfoX[row][col] = col*brickWidth;
                         locationInfoY[row][col] = row*brickHeight;
-                        //clear[row][col] = (hitsNeeded[row][col]==0);
-                       // System.out.println("Hits Needed: " + hitsNeeded[row][col] + " X: "+locationInfoX[row][col]+" Y: "+locationInfoY[row][col]);
                         totalNumberOfBricks++;
                     }
                 }
@@ -45,11 +42,9 @@ public class Level {
             e.printStackTrace();
         }
         setUpLevel();
-        System.out.println("numberBricksDestroyed: " +numberBricksDestroyed);
     }
     public void setUpLevel(){
         myBricks = new Brick[screenSize/brickHeight][screenSize/brickWidth];
-        System.out.println("total num of bricks: "+totalNumberOfBricks);
         for(int row=0; row<screenSize/brickHeight; row++){
             for(int col = 0; col<screenSize/brickWidth; col++){
                 Brick holder;
@@ -59,11 +54,9 @@ public class Level {
                 } else if(hitsNeeded[row][col]==100){
                     holder = new PowerUpBrick("points", locationInfoX[row][col],locationInfoY[row][col]);
                 } else if(hitsNeeded[row][col]==110){
-                    holder = new PowerUpBrick("paddleSpeed", locationInfoX[row][col], locationInfoY[row][col]);
+                    holder = new PowerUpBrick("paddle speed", locationInfoX[row][col], locationInfoY[row][col]);
                 } else if(hitsNeeded[row][col]==120){
-                    holder = new PowerUpBrick("ballRadius", locationInfoX[row][col], locationInfoY[row][col]);
-                } else if(hitsNeeded[row][col]==130){
-                    holder = new PowerUpBrick("bonusBall", locationInfoX[row][col], locationInfoY[row][col]);
+                    holder = new PowerUpBrick("ball radius", locationInfoX[row][col], locationInfoY[row][col]);
                 } else if(hitsNeeded[row][col]==140){
                     holder = new PowerUpBrick("shield", locationInfoX[row][col], locationInfoY[row][col]);
                 } else if(hitsNeeded[row][col]==-100){
@@ -76,34 +69,17 @@ public class Level {
                     holder = new Brick(hitsNeeded[row][col], locationInfoX[row][col], locationInfoY[row][col]);
                 }
                 myBricks[row][col] = holder;
-                //System.out.println("Made a brick that needs " + hitsNeeded[row][col] + " hits at X: "+locationInfoX[row][col]+" Y: "+locationInfoY[row][col]);
             }
         }
-        //System.out.println("done with setUpLevel()");
     }
     public Rectangle getBrickNode(int row, int col){
         return myBricks[row][col].getNode();
     }
-    public boolean getBrickClear(int row, int col){
-        return clear[row][col];
-    }
     public void incrementBricksDestroyed(){
         numberBricksDestroyed++;
-        System.out.println("number of bricks destroyed: "+numberBricksDestroyed);
+        //System.out.println("number of bricks destroyed: "+numberBricksDestroyed);
     }
-    /*public boolean isClear(){
-        boolean ret = true;
-        for(int row=0; row<screenSize/brickHeight; row++) {
-            for (int col = 0; col < screenSize / brickWidth; col++) {
-                if (!clear[row][col]) {
-                    return clear[row][col];
-                }
-            }
-        }
-        return true;
-    }*/
     public boolean isClear(){
-        //System.out.println("called");
         return (numberBricksDestroyed==totalNumberOfBricks);
     }
 

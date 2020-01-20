@@ -5,44 +5,35 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 
+/**
+ * Ball exists to have a main object that breaks bricks
+ * Assumptions:
+ *
+ * Dependencies:
+ *      Depends on Circle, Paddle for the starting position (need paddle dimensions), Main for the screen size
+ * A ball can be created at the origin (center of the screen), and given an X and Y speed. These speeds as well as
+ * the balls radius, xposition, and yposition can be controlled. The ball can hit a brick.
+ */
 public class Ball{
 
     private Circle ball;
     public static final int BALL_RADIUS = 8;
     public static final int BASIC_BALL_SPEED = 100;
-    //private int screenSize = Main.SIZE;
     private int startingXPosition = Main.SIZE/2;
     private int startingYPosition = Main.SIZE-BALL_RADIUS-Main.GAP-Paddle.PADDLE_HEIGHT;
     private double ballYSpeed;
     private double ballXSpeed;
     public static final Paint ballColor = Color.GREY;
-    //private Paint bonusBallColor = Color.PURPLE;
 
-    private int paddleHeight = Paddle.PADDLE_HEIGHT;
-    private int gap;
     private boolean canHit;
 
     public Ball(){
         this(BALL_RADIUS, ballColor);
     }
-    public Ball(int newRadius){
-        this(newRadius, ballColor);
-        //ball = new Circle(startingXPosition, startingYPosition, newRadius, ballColor);
-        //ballXSpeed = 0;
-        //ballYSpeed = 0;
-    }
     public Ball(int newRadius, Paint newBallColor){
         ball = new Circle(startingXPosition, startingYPosition, newRadius, newBallColor);
         canHit = true;
-        //ballXSpeed = 0;
-        //ballYSpeed = 0;
     }
-    /*
-    public Ball(String "bonus"){
-        this();
-        ballYSpeed = BALL_Y_SPEED;
-        ballXSpeed = BALL_X_SPEED/Math.abs(BALL_X_SPEED) * (Math.random() * basicBallSpeed/2 + basicBallSpeed/2);
-    }*/
     public void beginMovingBall(){
         ballYSpeed = -1 * BASIC_BALL_SPEED;
     }
@@ -75,7 +66,6 @@ public class Ball{
         canHit = true;
         ballYSpeed *= -1;
     }
-    //TODO IF YOU ALWAYS PAIR THESE TWO THEN MAKE THEM ONE METHOD
     public void updateBallCenter(double elapsedTime){
         ball.setCenterX(ball.getCenterX() + ballXSpeed * elapsedTime);
         ball.setCenterY(ball.getCenterY() + ballYSpeed * elapsedTime);
@@ -101,9 +91,6 @@ public class Ball{
     }
     public void grow(){
         ball.setRadius(BALL_RADIUS*2);
-    }
-    public double getBallXSpeed() {
-        return ballXSpeed;
     }
     public double getBallYSpeed(){
         return ballYSpeed;
