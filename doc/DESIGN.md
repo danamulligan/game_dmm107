@@ -73,13 +73,27 @@ Adding a new feature would require two things: adding a new class/updating an ex
     ```
  in ``Main``, add this Group to Main's ``root`` in ``step()`` (line 144), but before doing that remove the *previous* Group containing the previous score and lives stats. Do that by adding another method to ``Main`` that serves that purpose.
  
-3. **Adding more PowerUps/Penalties**
+3.**Adding a Bonus Ball**
+
+While I never got around it it, I had plans to make a round where the player could also shoot extra balls from the paddle. I set up this decision by setting all methods to do with the ball to take a parameter of a ``Ball``, so that later I could just pass in the new bonus balls.
+
+Examples:
+* In `Main` lines 191-194,
+* 203-210, 
+* 215-223, 
+* 296-316, 
+* 319-324, and more.
+
+I even set up my code so that the ball could be launced from the paddle regardless of where it was on the screen (lines 449-443 in ``Main``), but never got around to actually making that feature. I didn't fully finish, but the path was there. I would have made a `BonusBall` class that ``extends Ball``, so that it could be treated like a Ball and still function even if it looked physically different.
+
+
+4. **Adding more PowerUps/Penalties**
 
     Adding a new PowerUp or Penalty would require adding in another condition in the ``Level`` Class, below line 71, as well as in one of the two methods in Main ``managePenalty()`` on line 398 and ``managePowerUp()`` on line 411, depending on if you were adding a penalty or power up. In these two methods, you would write what you want to happen if the 'package' (the colored circle that drops when a special brick is hit) is caught by the paddle under the same ``if`` statement.
     
     This could be as simple as making a change to the ball (``myBall``) or paddle (``myPaddle``), or creating a new instance of a class (such as what is done on lines 419-421). This class can be created, pre-existing, or extend a pre-existing class if it behaves in the same way.
     
-4. **Adding a new Level**
+5. **Adding a new Level**
     All that needs to be done to add a new level is to create a new file named properly and following the assumed format (as explained above).
     
     A new cheat key would need to be added (add `` || code == KeyCode.DIGIT#`` to line 370 in Main), and ``skipToLevel(code)`` would need to be updated with an additional 
