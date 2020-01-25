@@ -46,7 +46,7 @@ public class Main extends Application{
     public static final int FRAMES_PER_SECOND = 60;
     public static final int MILLISECOND_DELAY = 1000 / FRAMES_PER_SECOND;
     public static final double SECOND_DELAY = 1.0 / FRAMES_PER_SECOND;
-    public static final Paint BACKGROUND = Color.AZURE;
+    public static final Color BACKGROUND = Color.AZURE;
     public static final int GAP = 10;
     public static final int DOUBLE_IN_SIZE = 2;
     public static final int ONE_BRICK_WORTH_OF_POINTS = 100;
@@ -144,7 +144,7 @@ public class Main extends Application{
 
         // if there is a laser, move the laser and check for hitting of bricks
         if(myStats.isThereALaserOnBoard()) {
-            moveAndHitWithLasers(elapsedTime);
+            moveAndHitWithLasers();
         }
 
         // if there is a power up or penalty, move it towards the paddle and check for catching it
@@ -194,10 +194,10 @@ public class Main extends Application{
     private void moveBall(Ball ballToMove, double elapsedTime){
         ballToMove.updateBallCenter(elapsedTime);
     }
-    private void moveAndHitWithLasers(double elapsedTime){
+    private void moveAndHitWithLasers(){
         hitBricks(myLaser.getLeftLaserBeamNode(), "laser left", myLevel);
         hitBricks(myLaser.getRightLaserBeamNode(), "laser right", myLevel);
-        myLaser.moveLasers(elapsedTime);
+        myLaser.moveLasers();
         updateLaserStatus();
     }
     private void moveAndHitWithBall(Ball ball, String label, double elapsedTime){
@@ -257,9 +257,9 @@ public class Main extends Application{
         if(myBrick instanceof PenaltyBrick){
             weHavePenalty(myBrick);
         } else if(myBrick instanceof PowerUpBrick){
-            weHavePowerUp(myBrick);
+            weHavePowerUp((PowerUpBrick) myBrick);
         }
-        if (myBrick.getHitsRemaining() == 0) {
+        if (myBrick.isBrickDestroyed()) {
             myBrick.deleteBrick();
             myLevel.incrementBricksDestroyed();
             root.getChildren().remove(myBrick.getNode());
@@ -271,7 +271,7 @@ public class Main extends Application{
         myLevel.incrementBricksDestroyed();
         root.getChildren().add(myPenalty.getNode());
     }
-    private void weHavePowerUp(Brick myBrick){
+    private void weHavePowerUp(PowerUpBrick myBrick){
         myPowerUp = myBrick.getPackage();
         myStats.changePowerUpCount(1);
         myLevel.incrementBricksDestroyed();
@@ -327,7 +327,7 @@ public class Main extends Application{
     private void updateLaserStatus(){
         if(myStats.isThereALaserOnBoard()){
             //this case covers if one or both of the laser beams pass the edge... essentially, the case where both miss, or one hits and the other misses
-            if(myLaser.getLeftLaserBeamNode().getY()+Laser.Laser_HEIGHT<=0 || myLaser.getRightLaserBeamNode().getY()+Laser.Laser_HEIGHT<=0){
+            if(myLaser.getLeftLaserBeamNode().getY()+Laser.LASER_HEIGHT<=0 || myLaser.getRightLaserBeamNode().getY()+Laser.LASER_HEIGHT<=0){
                 myStats.setLaserStatus(false);
             }
             //both hit a target

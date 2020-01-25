@@ -1,6 +1,7 @@
 # DESIGN.md
 
 ## NAME: Dana Mulligan (dmm107)
+## NOTE: all line refs are from when code was submitted 
  
 ### Design Goals
 In designing the project, I wanted to make it easy to **add different types of bricks, levels, and power ups quickly**, and I think that I succeeded! Once I had the bare bones down, it took very little time to add different types of bricks (what I mean by that: bricks that take a different amount of hits to break, and bricks that have powerups and penalties). As described below, adding another level doesn't take much time or effort, and adding a powerup is also described below. Once I had written the ``PowerUpBrick``, ``PowerUp``, ``PenaltyBrick``, and ``Penalty`` Classes, it became really easy to add another type of power up. Adding a new power up that doesn't change the state of any object currently in game play (such as making the ``Shield``) didn't take any time either, and I had it working in under 30 minutes (which is fast for me). So while I struggled in getting the Levels to work, once it was there it was easy to do what I had wanted to do.
@@ -35,6 +36,7 @@ The core classes (related to the *basic* functioning of a breakout game) are:
             * This was made so that I could implement PowerUps using integers instead of other characters
     * No negative values with the exception of the Penalties
 * The level files will follow the naming sceme of 'level' followed by the level number
+    * each level will have exactly 441 ints in it (note: level1 accidentally is 21 bricks short upon submission, so the level clears early. This has since been fixed.)
 * There will only ever be one PowerUp or Penalty on the screen at one time (they're spaced out to try and avoid this). This also assumes that the player will not cheat to break bricks they cannot reach with the ball (aka any bricks 'trapped' by other bricks)
     * This way, I can easily move the PowerUp/Penalty down to the paddle
 

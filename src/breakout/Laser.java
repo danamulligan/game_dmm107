@@ -13,49 +13,41 @@ import javafx.scene.shape.Rectangle;
  * each beam is capable of only one hit, and can break bricks
  */
 public class Laser {
-    public static final int Laser_WIDTH = 5;
-    public static final int Laser_HEIGHT = 25;
-    public static final int Laser_SPEED = 15;
+    public static final int LASER_WIDTH = 5;
+    public static final int LASER_HEIGHT = 25;
+    public static final int LASER_SPEED = 15;
 
+    private Color laserColor = Color.GREENYELLOW;
     private Rectangle leftLaserBeam;
     private Rectangle rightLaserBeam;
     private boolean leftCanHit;
     private boolean rightCanHit;
 
     /**
-     * Constructor
+     * Constructor that sets the left beam to the leftmost edge of the paddle, and the right beam to the rightmost edge of the paddle
      * @param xPosition
      * @param paddleWidth
      */
     public Laser(double xPosition, double paddleWidth){
-        leftLaserBeam = new Rectangle(xPosition+Laser_WIDTH, Main.SIZE-Main.GAP-Laser_HEIGHT-Paddle.PADDLE_HEIGHT, Laser_WIDTH, Laser_HEIGHT);
-        leftLaserBeam.setFill(Color.GREENYELLOW);
-        rightLaserBeam = new Rectangle(xPosition+paddleWidth-2*Laser_WIDTH, Main.SIZE-Main.GAP-Laser_HEIGHT-Paddle.PADDLE_HEIGHT, Laser_WIDTH, Laser_HEIGHT);
-        rightLaserBeam.setFill(Color.GREENYELLOW);
+        leftLaserBeam = new Rectangle(xPosition+LASER_WIDTH, Main.SIZE-Main.GAP-LASER_HEIGHT-Paddle.PADDLE_HEIGHT, LASER_WIDTH, LASER_HEIGHT);
+        leftLaserBeam.setFill(laserColor);
         leftCanHit = true;
+
+        rightLaserBeam = new Rectangle(xPosition+paddleWidth-2*LASER_WIDTH, Main.SIZE-Main.GAP-LASER_HEIGHT-Paddle.PADDLE_HEIGHT, LASER_WIDTH, LASER_HEIGHT);
+        rightLaserBeam.setFill(laserColor);
         rightCanHit = true;
     }
 
     /**
      * Move lasers up towards the top of the screen
-     * @param elapsedTime
      */
-    public void moveLasers(double elapsedTime){
-        leftLaserBeam.setY(leftLaserBeam.getY()-Laser_SPEED);
-        rightLaserBeam.setY(rightLaserBeam.getY()-Laser_SPEED);
+    public void moveLasers(){
+        leftLaserBeam.setY(leftLaserBeam.getY()-LASER_SPEED);
+        rightLaserBeam.setY(rightLaserBeam.getY()-LASER_SPEED);
     }
 
     /**
-     * allow the left laser to be added to a collection by returning it's Rectangle
-     * @return leftLaserBeam
-     */
-    public Rectangle getLeftLaserBeamNode() {
-        return leftLaserBeam;
-    }
-
-    /**
-     * update variables after the left beam hits a brick, move it off screen to avoid
-     * getting in the way of gameplay
+     * update variables after the left beam hits a brick, move it off screen to avoid getting in the way of gameplay
      * needs Main
      */
     public void leftLaserHitABrick(){
@@ -64,9 +56,9 @@ public class Laser {
         leftLaserBeam.setY(Main.SIZE);
         leftLaserBeam.setFill(Main.BACKGROUND);
     }
+
     /**
-     * update variables after the right beam hits a brick, move it off screen to avoid
-     * getting in the way of gameplay
+     * update variables after the right beam hits a brick, move it off screen to avoid getting in the way of gameplay
      * needs Main
      */
     public void rightLaserHitABrick(){
@@ -83,6 +75,7 @@ public class Laser {
     public boolean getLeftLaserHitStatus(){
         return leftCanHit;
     }
+
     /**
      * get whether or not the right beam can hit a brick
      * @return rightCanHit
@@ -90,8 +83,17 @@ public class Laser {
     public boolean getRightLaserHitStatus(){
         return rightCanHit;
     }
+
     /**
-     * allow the right laser to be added to a collection by returning it's Rectangle
+     * allow the left laser to be added to a collection by returning its Rectangle
+     * @return leftLaserBeam
+     */
+    public Rectangle getLeftLaserBeamNode() {
+        return leftLaserBeam;
+    }
+
+    /**
+     * allow the right laser to be added to a collection by returning its Rectangle
      * @return rightLaserBeam
      */
     public Rectangle getRightLaserBeamNode(){

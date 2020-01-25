@@ -28,6 +28,7 @@ public class Level {
             screenSize = Main.SIZE;
             brickWidth = Brick.BRICK_WIDTH;
             brickHeight = Brick.BRICK_HEIGHT;
+
             hitsNeeded = new int[screenSize/brickHeight][screenSize/brickWidth];
             locationInfoX = new int[screenSize/brickHeight][screenSize/brickWidth];
             locationInfoY = new int[screenSize/brickHeight][screenSize/brickWidth];
@@ -81,15 +82,8 @@ public class Level {
     }
     public void incrementBricksDestroyed(){
         numberBricksDestroyed++;
-        //System.out.println("number of bricks destroyed: "+numberBricksDestroyed);
     }
     public boolean isClear(){
         return (numberBricksDestroyed==totalNumberOfBricks);
-    }
-
-    public static void main(String[] args) {
-        File testFile = new File("/Users/danamulligan/Archives/workspace308/game_dmm107/doc/testFileLevel");
-        Level test = new Level(testFile);
-        test.setUpLevel();
     }
 }

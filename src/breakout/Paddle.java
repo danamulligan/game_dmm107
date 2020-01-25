@@ -4,6 +4,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Paint;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 
 /**
  * Paddle exists to create a moving object
@@ -17,13 +18,14 @@ import javafx.scene.shape.Rectangle;
  * Create a paddle to move left or right along the bottom of a screen
  */
 public class Paddle {
-    private Rectangle paddleLeft;
-    private Rectangle paddleMiddle;
-    private Rectangle paddleRight;
     public static final int BASIC_PADDLE_WIDTH = 81; //divisible by 9
     public static final int BASIC_PADDLE_SPEED = 10;
     public static final int PADDLE_HEIGHT = 10;
-    public static final Paint paddleColor = Color.PINK;
+    public static final Paint PADDLE_COLOR = Color.BLUE;
+
+    private Rectangle paddleLeft;
+    private Rectangle paddleMiddle;
+    private Rectangle paddleRight;
     private double actualPaddleWidth;
     private int paddleSpeed = BASIC_PADDLE_SPEED;
 
@@ -34,20 +36,28 @@ public class Paddle {
      */
     public Paddle(double scale, KeyCode code){
         actualPaddleWidth = BASIC_PADDLE_WIDTH;
+
+        //check and see if there is a scale
         if(code == KeyCode.G || code == KeyCode.S){
             actualPaddleWidth = BASIC_PADDLE_WIDTH*scale;
         }
-        paddleLeft = new Rectangle(Main.SIZE/2-actualPaddleWidth/2, Main.SIZE-PADDLE_HEIGHT-Main.GAP, actualPaddleWidth/3, PADDLE_HEIGHT);
-        paddleLeft.setFill(Color.BLUE); //change later to paddleColor
-        paddleMiddle = new Rectangle(Main.SIZE/2-actualPaddleWidth/6, Main.SIZE-PADDLE_HEIGHT-Main.GAP, actualPaddleWidth/3, PADDLE_HEIGHT);
-        paddleMiddle.setFill(Color.BLUE); //change later to paddleColor
-        paddleRight = new Rectangle(Main.SIZE/2+actualPaddleWidth/6, Main.SIZE-PADDLE_HEIGHT-Main.GAP, actualPaddleWidth/3, PADDLE_HEIGHT);
-        paddleRight.setFill(Color.BLUE); //change later to paddleColor
+
+        //I'm going to be typing these a lot in a moment, so to make things faster
+        int ypos = Main.SIZE-PADDLE_HEIGHT-Main.GAP;
+        double thirdPaddleWidth = actualPaddleWidth/3;
+
+        paddleLeft = new Rectangle(Main.SIZE/2-actualPaddleWidth/2, ypos, thirdPaddleWidth, PADDLE_HEIGHT);
+        paddleLeft.setFill(PADDLE_COLOR);
+
+        paddleMiddle = new Rectangle(Main.SIZE/2-actualPaddleWidth/6, ypos, thirdPaddleWidth, PADDLE_HEIGHT);
+        paddleMiddle.setFill(PADDLE_COLOR);
+
+        paddleRight = new Rectangle(Main.SIZE/2+actualPaddleWidth/6, ypos, thirdPaddleWidth, PADDLE_HEIGHT);
+        paddleRight.setFill(PADDLE_COLOR);
     }
 
     /**
-     * create a paddle at half the size
-     * @param code
+     * constructor to shrink the paddle by half the normal size
      */
     public Paddle(KeyCode code){
         this(0.5, code);
@@ -105,6 +115,7 @@ public class Paddle {
 
     /**
      * return the paddle's full current width
+     * used so the lasers can fire from the correct positions
      * @return actualPaddleWidth
      */
     public double getActualPaddleWidth(){
@@ -113,6 +124,7 @@ public class Paddle {
 
     /**
      * get leftmost xPosition
+     * used so the lasers can fire from the correct positions
      * @return leftmost xPosition
      */
     public double getLeftX(){
@@ -120,24 +132,29 @@ public class Paddle {
     }
 
     /**
-     * return paddleLeft so it can be added to a collection
+     * return paddleLeft so it can be added to a collection,
+     * and checked for collisions with the ball (ball will bounce to the left)
      * @return paddleLeft
      */
-    public Rectangle getNodeLeft(){
+    public Shape getNodeLeft(){
         return paddleLeft;
     }
+
     /**
-     * return paddleMiddle so it can be added to a collection
+     * return paddleMiddle so it can be added to a collection,
+     * and checked for collisions with the ball (ball will bounce directly up)
      * @return paddleMiddle
      */
-    public Rectangle getNodeMiddle(){
+    public Shape getNodeMiddle(){
         return paddleMiddle;
     }
+
     /**
-     * return paddleRight so it can be added to a collection
+     * return paddleRight so it can be added to a collection,
+     * and checked for collisions with the ball (ball with bounce to the right
      * @return paddleRight
      */
-    public Rectangle getNodeRight(){
+    public Shape getNodeRight(){
         return paddleRight;
     }
 }

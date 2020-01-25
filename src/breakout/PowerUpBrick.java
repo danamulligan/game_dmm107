@@ -9,10 +9,11 @@ package breakout;
  *      Brick Class
  *      PowerUp Class
  * Create a PowerUpBrick if the hits needed is 100+, drop a PowerUp if hit
- * Only three types:
+ * Only four types:
  *      adding points
  *      increasing paddle speed
  *      increasing ball radius
+ *      adding a shield at the bottom of the screen
  */
 public class PowerUpBrick extends Brick {
 
@@ -53,7 +54,7 @@ public class PowerUpBrick extends Brick {
     public void dropPackage(){
         powerUp = new PowerUp(powerUpType, xPosition, yPosition);
     }
-    @Override
+
     /**
      * returns the PowerUp so it can be accessed in gameplay
      * @return powerUp
