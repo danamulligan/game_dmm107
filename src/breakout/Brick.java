@@ -5,7 +5,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 
 public class Brick {
-    public static final Paint[] HITS_NEEDED_COLORS = {Color.AZURE, Color.LIGHTCORAL, Color.PALEGOLDENROD, Color.PINK, Color.GREEN, Color.BLUE, Color.PEACHPUFF, Color.BLACK};;
+    public static final Paint[] HITS_NEEDED_COLORS = {Color.AZURE, Color.LIGHTCORAL, Color.PALEGOLDENROD, Color.PINK, Color.GREEN, Color.BLUE, Color.PEACHPUFF, Color.BLACK};
     public static final int BRICK_WIDTH = 20;
     public static final int BRICK_HEIGHT = 20;
 
