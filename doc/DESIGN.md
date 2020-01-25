@@ -1,26 +1,32 @@
 # DESIGN.md
 
 ## NAME: Dana Mulligan (dmm107)
-
-This document is typically an update of a planning Design Document to describe the final, implemented, version of the code to provide a detailed roadmap for other developers to understand your project's design goals.
-
-This file should be included in the doc folder of your project repository and contain the following information:
-
-- [x] names of all people who worked on the project    
-- [x] each person's role in developing the project
-- [ ] what are the project's design goals, specifically what kinds of new features did you want to make easy to add
-- [ ] describe the high-level design of your project, focusing on the purpose and interaction of the core classes
-- [ ] what assumptions or decisions were made to simplify your project's design, especially those that affected adding required features
-- [x] describe, in detail, how to add new features to your project, especially ones you were not able to complete by the deadline
- 
  
 ### Design Goals
-In designing the project, I wanted to make it easy to **add different types of bricks, levels, and power ups quickly**. 
+In designing the project, I wanted to make it easy to **add different types of bricks, levels, and power ups quickly**, and I think that I succeeded! Once I had the bare bones down, it took very little time to add different types of bricks (what I mean by that: bricks that take a different amount of hits to break, and bricks that have powerups and penalties). As described below, adding another level doesn't take much time or effort, and adding a powerup is also described below. Once I had written the ``PowerUpBrick``, ``PowerUp``, ``PenaltyBrick``, and ``Penalty`` Classes, it became really easy to add another type of power up. Adding a new power up that doesn't change the state of any object currently in game play (such as making the ``Shield``) didn't take any time either, and I had it working in under 30 minutes (which is fast for me). So while I struggled in getting the Levels to work, once it was there it was easy to do what I had wanted to do.
 
 ### High Level Design
+The core classes (related to the *basic* functioning of a breakout game) are:
+``Ball``, ``Brick``, ``EndScreen``, ``Level``, ``Main``, ``Paddle``, ``SplashScreen``, and ``Stats``.
 
-
-### Detailed Design (specific examples)
+**Purposes and interactions of each:**
+* ``Ball``
+    * Hit ``Bricks`` to score points (stored in ``Stats``), and move through each ``Level`` in the game.
+* ``Brick``
+    * The building blocks of a ``Level``, a ``Brick`` takes a certain number of hits to break. Destroyed if a ``Ball`` hits it that many times.
+* ``EndScreen``
+    * Gives the player feedback on how many points they scored, and signifies that the game is over.
+* ``Level``
+    * Provide the environment of ``Bricks`` for the ``Ball`` to break, serve as a challenge for the player to overcome. If all bricks in a level are destroyed, the level is cleared.
+* ``Main``
+    * Control gameplay, including all player<->game interactions
+    * Starts with a ``SplashScreen`` and waits for player input. Then, sets up the first ``Level`` with a ``Ball``, a ``Paddle``, lives and initial points (stored in ``Stats``), and switches between ``Levels`` until the game is over. Then, switches to an ``EndScreen``.
+* ``Paddle``
+    * move along the bottom of the screen, and bounce the ``Ball`` back up towards the bricks
+* ``SplashScreen``
+    * A basic start up screen explaining the rules of the breakout game, and allowing a player to start the game.
+* ``Stats``
+    * Holds all of the information of each game (how many points, lives, and more (unrelated to core functionality)).
 
 ### Assumptions and Decisions Made to Simplify Design
 * The level files will have ONLY VALID integers in the file
@@ -29,6 +35,8 @@ In designing the project, I wanted to make it easy to **add different types of b
             * This was made so that I could implement PowerUps using integers instead of other characters
     * No negative values with the exception of the Penalties
 * The level files will follow the naming sceme of 'level' followed by the level number
+* There will only ever be one PowerUp or Penalty on the screen at one time (they're spaced out to try and avoid this). This also assumes that the player will not cheat to break bricks they cannot reach with the ball (aka any bricks 'trapped' by other bricks)
+    * This way, I can easily move the PowerUp/Penalty down to the paddle
 
 
 ### Adding New Features
@@ -80,6 +88,4 @@ Adding a new feature would require two things: adding a new class/updating an ex
             myStats.changeLevelNumber(#);
         }    
     ```
-    statement. If the changes proposed in 1. were carried out, `finalLevelNum` should be updated to the new total number of levels. 
-
- 
+    statement. If the changes proposed in 1. were carried out, `finalLevelNum` should be updated to the new total number of levels. Otherwise, change the magic number on line 162 in ``Main``. 
